@@ -1,0 +1,273 @@
+Build a full MVP website for an eldercare education and expert referral platform. 
+This is a real business targeting families in crisis, aging individuals, and 
+proactive planners navigating eldercare, Medicare/Medicaid, estate planning, 
+and probate. The platform serves the NJ/tri-state area initially.
+
+---
+
+## TECH STACK
+- React (Vite)
+- React Router for navigation
+- Tailwind CSS for styling
+- No backend required at MVP — use static data and mailto/Calendly links
+- Google Fonts for typography
+- Fully mobile responsive (users are often on phones in hospitals)
+
+---
+
+## DESIGN DIRECTION
+Warm, trustworthy, and calm. This is not a startup or fintech product — 
+it's a resource for people under emotional stress. The aesthetic should feel 
+like a knowledgeable, compassionate guide.
+
+- Color palette: Deep navy (#1B2A4A) as primary, warm cream/off-white 
+  (#FAF7F2) as background, warm gold (#C9922A) as accent, soft sage 
+  green (#7A9E7E) as secondary accent
+- Typography: Use "Playfair Display" for headings (Google Fonts) — 
+  authoritative and warm. Use "Source Serif 4" for body text — readable, 
+  human, not clinical
+- Avoid: Purple gradients, generic sans-serif, corporate cold aesthetics
+- Motion: Subtle fade-in on scroll for content sections. Gentle hover 
+  states on cards and buttons. Nothing jarring.
+- Visual details: Soft drop shadows on cards, generous whitespace, 
+  warm background textures (subtle noise or grain overlay on hero section)
+
+---
+
+## SITE STRUCTURE — BUILD ALL OF THESE
+
+### 1. HOMEPAGE (/)
+
+Hero Section:
+- Headline: "You Don't Have to Figure This Out Alone"
+- Subheadline: "Clear guidance for families navigating eldercare, Medicare, 
+  estate planning, and life's hardest transitions — whenever you need it most."
+- Two CTAs: "Find Your Starting Point" (primary, routes to /start) and 
+  "Browse Resources" (secondary, routes to /resources)
+- Warm, human hero image placeholder (use a soft illustrated or gradient 
+  background, NOT a stock photo placeholder)
+
+"How We Help" Section:
+- Three columns: Understand Your Options / Find the Right Expert / 
+  Take the Next Step
+- Simple icons, 2-3 sentence descriptions each
+
+The Six Scenario Cards Section:
+- Headline: "Where Are You Right Now?"
+- Six clickable cards, each with an icon, title, and one-line description:
+  1. 🚨 I'm In Crisis Right Now — "Parent hospitalized or urgent care needed"
+  2. 👴 We Need Ongoing Care — "Managing long-term caregiving decisions"
+  3. 📋 Medicare & Medicaid — "Understanding coverage and benefits"
+  4. 📝 Estate Planning — "Getting important documents in order"
+  5. ⚖️ After a Loved One Passes — "Navigating next steps after a loss"
+  6. 🗺️ I Want to Plan Ahead — "Proactive planning before a crisis"
+- Each card routes to its corresponding /resources/[scenario] page
+
+Social Proof Strip:
+- Simple trust bar: "Serving NJ & Tri-State Families" | 
+  "Vetted Expert Network" | "Plain-Language Guidance" | 
+  "No Legal or Financial Advice — Just Clear Direction"
+
+Email Capture Section:
+- Headline: "Get the Free Eldercare Crisis Checklist"
+- Subtext: "Know exactly what to do and who to call — 
+  delivered to your inbox instantly."
+- Email input + "Send Me the Checklist" button
+- On submit: show a thank you message (no backend needed, 
+  just a state change)
+
+Footer:
+- Logo, tagline, nav links
+- Disclaimer: "This platform provides general educational information only. 
+  Nothing on this site constitutes legal, financial, or medical advice. 
+  Always consult a qualified professional for your specific situation."
+- © 2025 [Platform Name]
+
+---
+
+### 2. START HERE PAGE (/start)
+
+A guided 5-question diagnostic flow built as a multi-step form:
+
+Step 1: "What best describes your situation right now?"
+- In a crisis and need immediate help
+- Managing ongoing care for a loved one
+- Planning ahead before anything urgent arises
+- I recently lost a loved one and need guidance
+- I'm an aging individual planning for myself
+
+Step 2: "Who needs help?"
+- An aging parent
+- A spouse or partner
+- Myself
+- Another family member
+
+Step 3: "How urgent is your situation?"
+- Extremely urgent — days or less
+- Soon — within the next few weeks
+- Not urgent — planning ahead
+
+Step 4: "What's already in place?" (multi-select checkboxes)
+- [ ] Medicare coverage
+- [ ] Medicaid coverage
+- [ ] Power of Attorney
+- [ ] A will or trust
+- [ ] Long-term care insurance
+- [ ] None of the above
+- [ ] I'm not sure
+
+Step 5: "What concerns you most right now?" (multi-select)
+- [ ] Finding and paying for care
+- [ ] Understanding Medicare or Medicaid
+- [ ] Legal documents and planning
+- [ ] What happens after a loved one passes
+- [ ] I don't know where to start
+
+Results Page:
+- Based on answers, display a personalized "Your Starting Point" card
+- Show 2-3 recommended resource sections based on their answers
+- Show 1-2 relevant expert types they should connect with
+- CTA: "Browse Resources" and "Find an Expert"
+- Use simple conditional logic in React state to map answer 
+  combinations to recommendations
+
+---
+
+### 3. RESOURCES PAGE (/resources)
+
+- Display all 6 scenario sections as expandable accordion panels 
+  OR as a tabbed interface
+- Each section contains:
+  - A brief orientation paragraph (2-3 sentences of placeholder 
+    content that sounds real and warm)
+  - A "Key Things to Understand" list (4-5 bullet points)
+  - A "Questions to Ask Your [Professional]" list (3-4 items)
+  - A "Next Steps" ordered list (3-4 steps)
+  - A CTA card: "Need specific help? Connect with an expert →"
+- Include a search bar at the top that filters visible content 
+  by keyword
+
+---
+
+### 4. EXPERT DIRECTORY PAGE (/experts)
+
+Display a filterable grid of expert profile cards.
+Create 12 sample experts with realistic placeholder data covering:
+- Elder Law Attorney (3 profiles)
+- Geriatric Care Manager (2 profiles)
+- Medicare Specialist (2 profiles)
+- Financial Planner — Eldercare (2 profiles)
+- Estate Planning Attorney (2 profiles)
+- Probate Attorney (1 profile)
+
+Each card displays:
+- Name and credential/title
+- Specialty badge (color-coded by type)
+- Location (NJ town)
+- Availability tier badge: 
+  "Responds within 48hrs" (green) / 
+  "Available within 2 weeks" (yellow) / 
+  "Planning & Complex Cases" (blue)
+- Star rating (static, 4.6-5.0 range)
+- One-line bio
+- Two buttons: "View Profile" and "Book Consultation" 
+  (Book opens a Calendly placeholder link)
+
+Filter bar at top:
+- Filter by specialty (dropdown)
+- Filter by availability (dropdown)
+- Search by name or location
+
+Individual Expert Profile Page (/experts/[id]):
+- Full bio
+- Areas of expertise (tags)
+- Languages spoken
+- Accepts new clients: Yes/No badge
+- "Book a Consultation" button (prominent)
+- "Ask a General Question" button 
+  (opens a mailto: link with pre-filled subject)
+- Placeholder for reviews section
+
+---
+
+### 5. ABOUT PAGE (/about)
+
+- Founder's story section — warm, first-person narrative placeholder:
+  "This platform was born from personal experience. 
+  Over the past few years, our founder navigated the eldercare 
+  system for both parents — and discovered firsthand how 
+  overwhelming, confusing, and isolating that experience can be..."
+- Mission statement
+- "Why We're Different" — three differentiators 
+  (No jargon / Vetted experts / Built by people who've been there)
+- Team placeholder section (Founder + Advisor cards)
+- Legal disclaimer panel
+
+---
+
+### 6. NAVIGATION
+
+Sticky top navigation:
+- Logo/platform name (use placeholder: "ClearPath Elder Guide" — 
+  client will rename)
+- Nav links: Home / Start Here / Resources / Find an Expert / About
+- CTA button in nav: "Get the Free Checklist" 
+  (scrolls to email capture on homepage)
+- Mobile: hamburger menu with slide-out drawer
+
+---
+
+## CONTENT TONE GUIDELINES
+Write all placeholder content in this voice:
+- Warm, plain-language, non-clinical
+- Empathetic first — acknowledge the difficulty before 
+  delivering information
+- Never use jargon without immediately explaining it
+- Short sentences. Real words. No corporate speak.
+- Example: Instead of "Navigate the complexities of eldercare 
+  decision-making," write "Figure out what to do when 
+  a parent needs help."
+
+---
+
+## COMPONENTS TO BUILD AS REUSABLES
+- ScenarioCard (used on homepage and resources page)
+- ExpertCard (used in directory)
+- StepDiagnostic (multi-step form component)
+- ResourceAccordion (used on resources page)
+- EmailCapture (used on homepage, potentially others)
+- StickyNav with mobile drawer
+- FilterBar (used on expert directory)
+- CTABanner (reusable call-to-action strip)
+- DisclaimerBanner (appears on all pages)
+
+---
+
+## ROUTING STRUCTURE
+/ — Homepage
+/start — Diagnostic flow
+/resources — All resources
+/resources/crisis — Crisis scenario
+/resources/ongoing-care — Ongoing care
+/resources/medicare-medicaid — Medicare/Medicaid
+/resources/estate-planning — Estate planning
+/resources/after-passing — After a loved one passes
+/resources/plan-ahead — Proactive planning
+/experts — Expert directory
+/experts/:id — Individual expert profile
+/about — About page
+
+---
+
+## FINAL NOTES
+- All forms are frontend-only (no backend). Email capture 
+  shows a success state on submit.
+- All "Book Consultation" buttons link to https://calendly.com 
+  as a placeholder
+- Include a floating "Need Help Now?" button fixed to 
+  bottom-right corner on all pages that scrolls to 
+  email capture or routes to /start
+- Ensure WCAG AA accessibility: sufficient color contrast, 
+  aria labels on interactive elements, keyboard navigable
+- Performance: lazy load images, keep bundle lean
+- Include a robots.txt and basic meta tags for SEO on each page
