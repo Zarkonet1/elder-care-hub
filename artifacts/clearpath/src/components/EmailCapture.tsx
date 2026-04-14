@@ -91,7 +91,7 @@ export function EmailCapture() {
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-secondary-foreground/60 mb-1">
-                Free Download — Branded PDF
+                Free Resource for NJ Families
               </p>
               <h3 className="font-serif text-xl md:text-2xl font-bold leading-snug">
                 Get the Free Eldercare Crisis Checklist
