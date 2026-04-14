@@ -18,6 +18,7 @@ interface Scenario {
   questionGroups: QuestionGroup[];
   steps: string[];
   experts: string[];
+  checklistLink?: boolean;
 }
 
 const SCENARIOS: Scenario[] = [
@@ -53,6 +54,7 @@ const SCENARIOS: Scenario[] = [
       "Connect with a Geriatric Care Manager or Elder Law Attorney if the situation is complex or moving quickly",
     ],
     experts: ["Geriatric Care Manager", "Elder Law Attorney"],
+    checklistLink: true,
   },
   {
     id: "ongoing-care",
@@ -380,6 +382,22 @@ export default function Resources() {
                       ))}
                     </div>
                   </section>
+
+                  {/* Checklist link — crisis section only */}
+                  {currentScenario.checklistLink && (
+                    <div className="bg-accent/10 rounded-xl p-6 border border-accent/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div>
+                        <p className="font-semibold text-secondary mb-1">Get the printable Crisis Checklist</p>
+                        <p className="text-sm text-muted-foreground">A step-by-step checklist you can use right now — and print or save as a PDF.</p>
+                      </div>
+                      <Link href="/checklist" className="flex-shrink-0">
+                        <Button className="bg-accent text-white hover:bg-accent/90 whitespace-nowrap">
+                          Open Checklist
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
 
                   {/* CTA */}
                   <div className="bg-primary/10 rounded-2xl p-8 border border-primary/20 text-center">

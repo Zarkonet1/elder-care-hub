@@ -11,6 +11,7 @@ export function StickyNav() {
     { href: "/", label: "Home" },
     { href: "/start", label: "Start Here" },
     { href: "/resources", label: "Resources" },
+    { href: "/checklist", label: "Crisis Checklist" },
     { href: "/experts", label: "Find an Expert" },
     { href: "/about", label: "About" },
   ];

@@ -1,0 +1,96 @@
+Build a new page at /checklist that displays the Eldercare 
+Crisis Checklist as a fully formatted, print-friendly page. 
+
+PAGE DESIGN:
+- Use the same color palette and typography as the rest 
+  of the site (navy, cream, gold, Playfair Display headings, 
+  Source Serif 4 body)
+- Add a "Print / Save as PDF" button at the top right that 
+  triggers window.print()
+- Add print CSS that hides navigation, footer, and the 
+  print button when printing, and formats cleanly on 
+  standard letter size
+- Add a ClearPath Elder Guide logo/name at the top of 
+  the printed version
+- Add the legal disclaimer at the bottom of the printed 
+  version
+
+PAGE HEADLINE: 
+"The Eldercare Crisis Checklist"
+
+PAGE SUBHEAD:
+"What to do, who to call, and what to find — 
+in the first 72 hours."
+
+SECTION 1 HEADLINE: "In the First 24 Hours"
+Checkboxes:
+- "Find out if the hospital admission is inpatient or 
+  observation status — ask the nurse or charge nurse 
+  directly. This affects Medicare coverage."
+- "Ask to speak with the hospital's discharge planner 
+  or social worker"
+- "Locate Medicare and any supplemental insurance cards"
+- "Find out if a Power of Attorney document exists — 
+  and where it is"
+- "Identify one family point person to coordinate 
+  communication"
+
+SECTION 2 HEADLINE: "Documents to Find"
+Checkboxes:
+- "Medicare card and any Medicare Advantage or supplement 
+  plan information"
+- "Medicaid card (if applicable)"
+- "Durable Power of Attorney"
+- "Healthcare Proxy / Healthcare Power of Attorney"
+- "Advance Directive / Living Will"
+- "Life insurance policies"
+- "Will or Trust documents"
+- "Current medication list"
+- "Primary care physician contact information"
+
+SECTION 3 HEADLINE: "Questions to Ask the Hospital"
+Checkboxes:
+- "What are the discharge options and what is the 
+  expected timeline?"
+- "Does my loved one qualify for Medicare-covered 
+  skilled nursing facility care?"
+- "Is there a patient advocate or social worker 
+  assigned?"
+- "What level of care will be needed at discharge?"
+
+SECTION 4 HEADLINE: "Who You May Need to Call"
+Checkboxes:
+- "Elder Law Attorney — if Medicaid, assets, or legal 
+  documents are a concern"
+- "Geriatric Care Manager — if you need help assessing 
+  care options fast"
+- "Medicare Helpline: 1-800-MEDICARE — for coverage 
+  questions"
+- "NJ SHIP Program — free Medicare counseling for 
+  NJ residents"
+- "Family members — identify roles and responsibilities 
+  early"
+
+SECTION 5 HEADLINE: "What Comes Next"
+(No checkboxes — display as plain text with links)
+- "Visit ClearPath Elder Guide for full guidance on 
+  each of these areas"
+- "Take the 5-minute assessment to get your 
+  personalized starting point" — link to /start
+- "Browse our expert network to find the right 
+  professional for your situation" — link to /experts
+
+BOTTOM DISCLAIMER:
+"This checklist is for general informational purposes 
+only and does not constitute legal, financial, or 
+medical advice. ClearPath Elder Guide — 
+clearpathelderguide.com"
+
+Make the checkboxes interactive — users can check 
+them off as they complete each item. Use React state 
+to track checked items. Checked items should show 
+a visual strikethrough or completion style.
+
+Add this page to the main navigation under Resources 
+as "Crisis Checklist" and also add it as a link in 
+the /resources/crisis section.
