@@ -1,0 +1,179 @@
+Replace all placeholder text on the /experts page with the 
+following. Keep all filtering, card layout, routing, and booking 
+button functionality exactly as built.
+
+PAGE HEADLINE: "Find the Right Expert"
+PAGE SUBHEAD: "Our network of vetted professionals covers every 
+aspect of eldercare — from legal and financial planning to care 
+management and Medicare guidance. Every expert is selected for 
+their expertise, their communication, and their availability to 
+actually help you."
+
+AVAILABILITY TIER LABELS:
+- Green badge: "Responds Within 48 Hours"
+- Yellow badge: "Available Within 2 Weeks"  
+- Blue badge: "Complex & Long-Term Cases"
+
+AVAILABILITY TIER TOOLTIP/LEGEND TEXT:
+- Green: "For families who need timely guidance"
+- Yellow: "For planning and non-urgent matters"
+- Blue: "Specialists for involved situations"
+
+DIRECTORY INTRO NOTE (above filter bar):
+"Not sure which type of expert you need? Take our 5-minute 
+assessment and we'll recommend the right match for 
+your situation."
+Link text: "Take the Assessment →"
+Link route: /start
+
+VETTING STATEMENT (prominent, below intro):
+"Every expert in our network has been reviewed for credentials, 
+experience, and — critically — their commitment to 
+responsiveness. Because an expert who can't see you for six 
+months isn't the right expert for most families facing a crisis."
+
+EXPERT PROFILE CARDS — replace sample data with the following 
+12 profiles:
+
+Profile 1:
+Name: "Margaret Sullivan, Esq."
+Title: "Elder Law Attorney"
+Specialty: "Elder Law"
+Location: "Morristown, NJ"
+Availability: Green — "Responds Within 48 Hours"
+Rating: 4.9
+Bio: "20 years focused exclusively on elder law, Medicaid 
+planning, and asset protection for NJ families."
+Accepts new clients: Yes
+
+Profile 2:
+Name: "David Reinholt, Esq."
+Title: "Elder Law Attorney"
+Specialty: "Elder Law"
+Location: "Princeton, NJ"
+Availability: Yellow — "Available Within 2 Weeks"
+Rating: 4.8
+Bio: "Specializes in Medicaid eligibility, spend-down 
+planning, and guardianship proceedings."
+Accepts new clients: Yes
+
+Profile 3:
+Name: "Karen Osei, Esq."
+Title: "Elder Law Attorney"
+Specialty: "Elder Law"
+Location: "Hackensack, NJ"
+Availability: Blue — "Complex & Long-Term Cases"
+Rating: 5.0
+Bio: "Complex estate and Medicaid matters, including 
+cases involving special needs and blended families."
+Accepts new clients: Yes
+
+Profile 4:
+Name: "Linda Caruso, MSW, CMC"
+Title: "Geriatric Care Manager"
+Specialty: "Geriatric Care Management"
+Location: "Summit, NJ"
+Availability: Green — "Responds Within 48 Hours"
+Rating: 4.9
+Bio: "Helps families assess care needs, evaluate 
+facilities, and coordinate care during and after 
+a crisis."
+Accepts new clients: Yes
+
+Profile 5:
+Name: "Thomas Brennan, RN, CMC"
+Title: "Geriatric Care Manager"
+Specialty: "Geriatric Care Management"
+Location: "Red Bank, NJ"
+Availability: Yellow — "Available Within 2 Weeks"
+Rating: 4.7
+Bio: "Nurse-trained care manager specializing in 
+post-hospitalization transitions and memory care 
+placement."
+Accepts new clients: Yes
+
+Profile 6:
+Name: "Patricia Yuen"
+Title: "Medicare Specialist"
+Specialty: "Medicare"
+Location: "Parsippany, NJ"
+Availability: Green — "Responds Within 48 Hours"
+Rating: 4.8
+Bio: "Independent Medicare counselor helping 
+beneficiaries choose the right coverage and avoid 
+costly enrollment mistakes."
+Accepts new clients: Yes
+
+Profile 7:
+Name: "Robert Anastasi"
+Title: "Medicare Benefits Advisor"
+Specialty: "Medicare"
+Location: "Toms River, NJ"
+Availability: Yellow — "Available Within 2 Weeks"
+Rating: 4.6
+Bio: "Specializes in Medicare Advantage vs. Original 
+Medicare comparisons and Medicare Savings Program 
+eligibility."
+Accepts new clients: Yes
+
+Profile 8:
+Name: "Sandra Kim, CFP"
+Title: "Financial Planner — Eldercare"
+Specialty: "Financial Planning"
+Location: "Westfield, NJ"
+Availability: Yellow — "Available Within 2 Weeks"
+Rating: 4.9
+Bio: "Fee-only financial planner focused on long-term 
+care funding strategies, including hybrid insurance 
+and self-funding approaches."
+Accepts new clients: Yes
+
+Profile 9:
+Name: "Frank Deluca, CFP"
+Title: "Financial Planner — Eldercare"
+Specialty: "Financial Planning"
+Location: "Livingston, NJ"
+Availability: Blue — "Complex & Long-Term Cases"
+Rating: 4.7
+Bio: "Works with families on eldercare cost projections, 
+asset protection strategies, and long-term care 
+insurance review."
+Accepts new clients: Yes
+
+Profile 10:
+Name: "Catherine Marks, Esq."
+Title: "Estate Planning Attorney"
+Specialty: "Estate Planning"
+Location: "Short Hills, NJ"
+Availability: Yellow — "Available Within 2 Weeks"
+Rating: 4.9
+Bio: "Drafts and reviews wills, trusts, powers of 
+attorney, and advance directives for individuals 
+and families at all stages of planning."
+Accepts new clients: Yes
+
+Profile 11:
+Name: "James Whitfield, Esq."
+Title: "Estate Planning Attorney"
+Specialty: "Estate Planning"
+Location: "Cherry Hill, NJ"
+Availability: Green — "Responds Within 48 Hours"
+Rating: 4.8
+Bio: "Focuses on straightforward estate plans for 
+families who need the essentials in place without 
+delay."
+Accepts new clients: Yes
+
+Profile 12:
+Name: "Donna Petrova, Esq."
+Title: "Probate Attorney"
+Specialty: "Probate"
+Location: "Montclair, NJ"
+Availability: Green — "Responds Within 48 Hours"
+Rating: 4.9
+Bio: "Guides executors and families through the NJ 
+probate process, estate administration, and 
+inheritance tax matters."
+Accepts new clients: Yes
+
+Confirm all 12 profiles were updated and which file was edited.

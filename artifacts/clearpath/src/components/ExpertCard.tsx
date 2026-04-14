@@ -7,7 +7,7 @@ export interface Expert {
   id: string;
   name: string;
   title: string;
-  specialty: "Elder Law" | "Geriatric Care" | "Medicare" | "Financial" | "Estate Planning" | "Probate";
+  specialty: "Elder Law" | "Geriatric Care Management" | "Medicare" | "Financial Planning" | "Estate Planning" | "Probate";
   location: string;
   availability: string;
   availabilityType: "quick" | "standard" | "planning";
@@ -17,9 +17,9 @@ export interface Expert {
 
 const specialtyColors = {
   "Elder Law": "bg-secondary text-secondary-foreground",
-  "Geriatric Care": "bg-accent text-accent-foreground",
+  "Geriatric Care Management": "bg-accent text-accent-foreground",
   "Medicare": "bg-blue-100 text-blue-800",
-  "Financial": "bg-primary text-primary-foreground",
+  "Financial Planning": "bg-primary text-primary-foreground",
   "Estate Planning": "bg-amber-100 text-amber-800",
   "Probate": "bg-gray-200 text-gray-800"
 };
