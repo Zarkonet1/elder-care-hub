@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CheckCircle2, FileText } from "lucide-react";
+import { CheckCircle2, FileText, ArrowRight } from "lucide-react";
 
 const CHECKLIST_SECTIONS = [
   {
@@ -72,9 +73,18 @@ export function EmailCapture() {
           <CheckCircle2 className="w-6 h-6 text-accent" />
         </div>
         <h3 className="font-serif text-2xl font-semibold text-secondary mb-3">It's on its way.</h3>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mb-6">
           Check your inbox — and know that you've just taken the most important first step.
         </p>
+        <Link href="/checklist">
+          <Button
+            size="lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 text-base"
+          >
+            Access Your Free Checklist Now
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </Link>
       </div>
     );
   }
