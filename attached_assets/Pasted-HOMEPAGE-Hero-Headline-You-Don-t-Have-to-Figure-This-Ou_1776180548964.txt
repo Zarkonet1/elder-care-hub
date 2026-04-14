@@ -1,0 +1,29 @@
+HOMEPAGE
+Hero
+Headline: "You Don't Have to Figure This Out Alone"
+Subheadline: "When a parent needs care, a loved one passes, or you're trying to plan ahead — the system is confusing, the information is overwhelming, and the stakes are high. We cut through all of it so you know exactly where to start."
+Primary CTA Button: Find Your Starting Point Secondary CTA Button: Browse Resources
+
+How We Help — Three Columns
+Column 1 Title: Understand What's Happening Body: We translate Medicare, Medicaid, elder law, and estate planning into plain English. No jargon. No assumptions. Just clear answers to the questions you're actually asking.
+Column 2 Title: Know What To Do Next Body: Step-by-step guidance built around your specific situation — not generic checklists. Whether you're in a crisis today or planning for tomorrow, we show you the path forward.
+Column 3 Title: Connect With the Right Expert Body: When you need more than general guidance, our vetted network of elder law attorneys, care managers, Medicare specialists, and estate planners is ready to help — with real availability and real responsiveness.
+
+Scenario Cards — "Where Are You Right Now?"
+Section Headline: Where Are You Right Now? Section Subhead: Start here. Tell us what's happening and we'll show you exactly where to begin.
+Card 1 — Crisis Title: I'm In Crisis Right Now Subtitle: Parent hospitalized or urgent care needed Body: Something happened and you need answers fast. Start here for immediate next steps.
+Card 2 — Ongoing Care Title: We Need Ongoing Care Subtitle: Managing long-term caregiving decisions Body: You're past the immediate crisis but facing decisions about care, costs, and family coordination.
+Card 3 — Medicare & Medicaid Title: Understanding Medicare & Medicaid Subtitle: Coverage, benefits, and how to access them Body: The most confusing part of eldercare — decoded into plain language with NJ-specific guidance.
+Card 4 — Estate Planning Title: Getting Affairs in Order Subtitle: Documents, planning, and peace of mind Body: The five things every family needs in place — and how to get started even if nothing exists yet.
+Card 5 — After Passing Title: A Loved One Just Passed Subtitle: What to do in the days and weeks ahead Body: Practical guidance for the steps that can't wait — and support for the ones that can.
+Card 6 — Plan Ahead Title: I Want to Plan Ahead Subtitle: Proactive planning before a crisis arrives Body: The best time to get organized is before you need to. Here's where to begin.
+
+Trust Bar
+"Serving NJ & Tri-State Families" | "Vetted Expert Network" | "Plain-Language Guidance Only" | "Built By People Who've Been There"
+
+Email Capture Section
+Headline: Get the Free Eldercare Crisis Checklist Subhead: When something happens, you won't have time to figure out where to start. This checklist tells you exactly what to do, who to call, and what documents to find — in the first 72 hours. Button: Send Me the Free Checklist Below button micro-copy: No spam. Unsubscribe anytime. Used by NJ families navigating eldercare. Success state message: "It's on its way. Check your inbox — and know that you've just taken the most important first step."
+
+Footer Tagline
+"Clear guidance for life's hardest transitions."
+Legal Disclaimer (appears in footer on every page): "ClearPath Elder Guide provides general educational information only. Nothing on this website constitutes legal, financial, or medical advice. Every situation is different — the information here is a starting point, not a substitute for guidance from a qualified professional. Always consult a licensed attorney, financial advisor, or healthcare provider for advice specific to your circumstances."

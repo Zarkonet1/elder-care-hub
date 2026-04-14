@@ -17,7 +17,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="font-serif font-bold text-xl">ClearPath Elder Guide</span>
             </div>
             <p className="text-[#FAF7F2]/70 max-w-sm mb-6">
-              Clear guidance for families navigating eldercare, Medicare, estate planning, and life's hardest transitions.
+              Clear guidance for life's hardest transitions.
             </p>
           </div>
           <div>
@@ -32,7 +32,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-[#FAF7F2]/20 text-sm text-[#FAF7F2]/50 text-center">
-          <p className="mb-2">This platform provides general educational information only. Nothing on this site constitutes legal, financial, or medical advice. Always consult a qualified professional for your specific situation.</p>
+          <p className="mb-4 max-w-3xl mx-auto leading-relaxed">
+            ClearPath Elder Guide provides general educational information only. Nothing on this website constitutes legal, financial, or medical advice. Every situation is different — the information here is a starting point, not a substitute for guidance from a qualified professional. Always consult a licensed attorney, financial advisor, or healthcare provider for advice specific to your circumstances.
+          </p>
           <p>© 2025 ClearPath Elder Guide</p>
         </div>
       </footer>
