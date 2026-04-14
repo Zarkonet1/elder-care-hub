@@ -1,0 +1,318 @@
+Replace all placeholder content in the /resources page with the 
+following. Keep all accordion/tab structure, routing, and CTAs 
+exactly as built.
+
+PAGE HEADLINE: "Resources & Guidance"
+PAGE SUBHEAD: "Plain-language guides organized around the 
+situations real families face. Start with the section that 
+matches where you are right now."
+
+--- SECTION 1: I'm In Crisis Right Now ---
+
+Orientation:
+"If something has just happened — a hospitalization, a sudden 
+diagnosis, an urgent need for care — it can feel like the ground 
+has shifted under you. You're being asked to make decisions you've 
+never made before, about a system you've never had to understand, 
+often while managing fear, grief, and exhaustion at the same time. 
+This section tells you what to do first."
+
+Key Things to Understand:
+- "The first 72 hours after a hospitalization are critical for 
+  understanding discharge options — hospitals begin discharge 
+  planning quickly, and you have the right to be part of that 
+  conversation"
+- "Medicare covers short-term rehabilitation in a skilled nursing 
+  facility after a qualifying hospital stay of at least three 
+  nights — but the rules are specific and the window is 
+  time-sensitive"
+- "Discharge planning is the process of figuring out where your 
+  loved one goes after the hospital — home with services, a rehab 
+  facility, or a longer-term care setting"
+- "You do not have to accept the first plan a hospital presents — 
+  you have the right to ask questions, request more time, and 
+  involve a patient advocate"
+- "A Geriatric Care Manager specializes in exactly this moment — 
+  they can assess needs, evaluate options, and guide your family 
+  through immediate decisions"
+
+Questions to Ask the Hospital Social Worker:
+- "What are the discharge options being considered, and what is 
+  the timeline?"
+- "Does my loved one qualify for Medicare-covered skilled nursing 
+  facility care?"
+- "What is the difference between custodial care and skilled care 
+  — and which does my loved one need?"
+- "Can we request more time before discharge to evaluate our 
+  options?"
+- "Is there a patient advocate or social worker assigned to 
+  this case?"
+
+Next Steps:
+1. "Ask to speak with the hospital's discharge planner or social 
+   worker today"
+2. "Find out whether the admission was classified as inpatient or 
+   observation status — this affects Medicare coverage 
+   significantly"
+3. "Gather key documents: insurance cards, Medicare and Medicaid 
+   information, power of attorney if one exists"
+4. "Connect with a Geriatric Care Manager or Elder Law Attorney 
+   if the situation is complex or moving quickly"
+
+--- SECTION 2: We Need Ongoing Care ---
+
+Orientation:
+"Once the immediate crisis has passed, a different set of 
+decisions begins. What level of care does your loved one actually 
+need? Can they stay at home with support? Is assisted living the 
+right step? How do you evaluate a facility? And perhaps the 
+question that weighs on most families — how are we going to pay 
+for this? This section helps you understand your options clearly 
+so you can make decisions with confidence."
+
+Key Things to Understand:
+- "There is a wide spectrum of care settings between living 
+  independently and a nursing home — in-home aides, adult day 
+  programs, assisted living, memory care, and skilled nursing 
+  facilities each serve different needs"
+- "The cost of long-term care in NJ is among the highest in the 
+  country — understanding what Medicaid covers and how to qualify 
+  is essential for most families"
+- "Medicaid for long-term care is different from regular Medicaid 
+  — it has specific asset and income rules, and a 60-month 
+  look-back period that examines prior financial transfers"
+- "You have the right to tour any licensed facility, review state 
+  inspection reports, and ask detailed questions about staffing 
+  and care practices"
+- "Caregiver burnout is real — family members managing care need 
+  support and resources too"
+
+Questions to Ask a Care Facility:
+- "What is the staff-to-resident ratio during day and night 
+  shifts?"
+- "How do you handle residents with memory care or behavioral 
+  needs?"
+- "What is included in the base monthly fee and what costs extra?"
+- "How do you communicate with families and how often?"
+- "What is your policy if a resident's care needs increase 
+  significantly?"
+
+Next Steps:
+1. "Assess your loved one's care needs honestly — Activities of 
+   Daily Living are the standard framework professionals use"
+2. "Research the NJ Medicaid long-term care program if private 
+   funds are limited"
+3. "Tour at least three facilities before making any decision"
+4. "Consult an Elder Law Attorney before making significant 
+   financial moves — Medicaid planning requires professional 
+   guidance"
+
+--- SECTION 3: Medicare & Medicaid ---
+
+Orientation:
+"Medicare and Medicaid are two entirely different programs that 
+are endlessly confused with each other — and that confusion can 
+cost families thousands of dollars and missed benefits. Medicare 
+is federal health insurance primarily for people 65 and older. 
+Medicaid is a joint federal-state program that pays for long-term 
+care for those who qualify financially. Understanding the basics 
+of both — and how they interact — is one of the most valuable 
+things you can do for your family."
+
+Key Things to Understand:
+- "Medicare has four parts: Part A covers hospital care, Part B 
+  covers medical services, Part C is Medicare Advantage, and 
+  Part D covers prescription drugs — each with its own costs and 
+  enrollment rules"
+- "Missing Medicare enrollment windows can result in permanent 
+  premium penalties — the timelines matter"
+- "Medicare does NOT cover long-term custodial care in a nursing 
+  home beyond a limited period — this surprises most families"
+- "Medicaid in NJ has specific income and asset limits for 
+  long-term care coverage, and a 60-month look-back period for 
+  asset transfers"
+- "Spend-down is the process of reducing assets to qualify for 
+  Medicaid — it must be done carefully and legally with 
+  professional guidance"
+- "Medicare Savings Programs can help lower-income beneficiaries 
+  with premiums and costs — many eligible people don't know 
+  they exist"
+
+Questions to Ask a Medicare Specialist:
+- "Am I enrolled in the right parts of Medicare for my 
+  situation?"
+- "Am I approaching any enrollment deadlines I should know 
+  about?"
+- "What is the difference between Original Medicare and Medicare 
+  Advantage for my specific needs?"
+- "Are there programs that could help reduce my Medicare costs?"
+
+Questions to Ask an Elder Law Attorney About Medicaid:
+- "Does my loved one currently qualify for Medicaid long-term 
+  care in NJ?"
+- "What assets are counted and which are exempt?"
+- "What is the look-back period and does it affect our 
+  situation?"
+- "What steps can we legally take to protect assets while 
+  planning for care?"
+
+Next Steps:
+1. "Confirm current Medicare enrollment status and which parts 
+   are active"
+2. "Review any upcoming enrollment windows"
+3. "If long-term care costs are a concern, consult an Elder Law 
+   Attorney about Medicaid planning — the earlier the better"
+4. "Check eligibility for Medicare Savings Programs through NJ's 
+   free SHIP counseling program"
+
+--- SECTION 4: Getting Affairs in Order ---
+
+Orientation:
+"Estate planning sounds like something only wealthy people need. 
+It isn't. Every adult at every income level needs a small set of 
+core documents that protect them and their family. Without them, 
+the people you love may be unable to make decisions on your 
+behalf, may face lengthy court processes, and may not know what 
+you would have wanted. This section explains what you need, what 
+each document does, and how to get started."
+
+Key Things to Understand:
+- "There are five essential documents every adult should have: 
+  a Will, a Durable Power of Attorney, a Healthcare Proxy, an 
+  Advance Directive, and a HIPAA Authorization"
+- "A Will determines what happens to your assets after you die 
+  — without one, NJ state law decides, which may not reflect 
+  your wishes"
+- "A Durable Power of Attorney gives someone you trust legal 
+  authority to manage your finances if you are unable to — 
+  without it, your family may need to go to court"
+- "A Healthcare Proxy designates who can make medical decisions 
+  on your behalf if you cannot speak for yourself"
+- "An Advance Directive documents your wishes for end-of-life 
+  care — it removes an impossible burden from your family"
+- "Estate planning documents should be reviewed after major life 
+  changes — marriage, divorce, death of a named person, or 
+  significant change in assets"
+
+Questions to Ask an Estate Planning Attorney:
+- "Do my current documents reflect my wishes and current family 
+  situation?"
+- "Is a trust appropriate for my situation, or is a will 
+  sufficient?"
+- "How do I title my assets to ensure they pass as I intend?"
+- "What happens to my estate in NJ if I die without a will?"
+- "How do I have the conversation with my aging parent about 
+  getting these documents in place?"
+
+Next Steps:
+1. "Inventory what documents currently exist — and find where 
+   they are stored"
+2. "If no documents exist, prioritize the Healthcare Proxy and 
+   Power of Attorney first — these protect living people"
+3. "Consult an Estate Planning Attorney — this is not an area 
+   for DIY documents when the stakes are real"
+4. "Store documents safely and make sure the right people know 
+   where they are"
+
+--- SECTION 5: A Loved One Just Passed ---
+
+Orientation:
+"Losing someone you love is one of the hardest things a person 
+goes through. And yet in the days and weeks that follow, there 
+are practical matters that cannot wait — notifications to make, 
+accounts to manage, legal processes to begin. This section 
+doesn't pretend that the practical and the emotional can be 
+fully separated. It simply tries to give you a clear path 
+through what needs to happen so you're not left guessing in 
+an already impossible time."
+
+Key Things to Understand:
+- "Probate is the legal process through which a deceased 
+  person's estate is administered — in NJ, not all assets go 
+  through probate. Accounts with named beneficiaries, jointly 
+  held property, and assets in a trust typically do not."
+- "The Executor named in the Will manages the estate through 
+  probate — if there is no will, the court appoints an 
+  Administrator"
+- "NJ has an inheritance tax that applies to certain 
+  beneficiaries — a probate attorney can clarify what applies 
+  to your situation"
+- "Time-sensitive tasks in the first 30 days include obtaining 
+  death certificates, notifying Social Security and Medicare, 
+  contacting financial institutions, and securing the deceased's 
+  property"
+- "Grief and administrative burden are a difficult combination 
+  — it is appropriate to get professional help, both emotional 
+  and legal"
+
+Questions to Ask a Probate Attorney:
+- "Does this estate need to go through probate in NJ?"
+- "What is my role and responsibility as Executor?"
+- "What are the deadlines I need to be aware of?"
+- "Are there tax implications I should know about?"
+- "How long does this process typically take?"
+
+Next Steps:
+1. "Obtain multiple certified copies of the death certificate — 
+   you will need them for banks, insurance, Social Security, 
+   and more"
+2. "Notify the Social Security Administration — if the deceased 
+   was receiving benefits, payments must stop and surviving 
+   spouse benefits may be available"
+3. "Locate the Will and contact a probate attorney to begin 
+   the process"
+4. "Secure property and assets — do not distribute anything 
+   until you understand the legal requirements"
+5. "Notify Medicare and any private insurance carriers"
+
+--- SECTION 6: I Want to Plan Ahead ---
+
+Orientation:
+"The families who navigate eldercare most successfully almost 
+always have one thing in common: they started before they had 
+to. Getting the right documents in place, having honest 
+conversations, understanding what care options exist and how 
+to pay for them — none of it is easy, but all of it is far 
+easier before a crisis than during one. If you're reading this 
+section, you're already ahead of most people."
+
+Key Things to Understand:
+- "A family care plan captures the aging person's wishes, 
+  medical information, key contacts, financial overview, and 
+  care preferences — creating one is the single most valuable 
+  planning exercise a family can do"
+- "Long-term care is expensive and Medicare does not cover most 
+  of it — understanding your options before you need them is 
+  essential"
+- "Powers of Attorney and Healthcare documents should be created 
+  while the person is legally competent — waiting too long can 
+  remove the option"
+- "Having honest conversations with aging parents about their 
+  wishes is difficult but deeply important — it is far better 
+  to know what they want while they can tell you"
+- "Financial planning for eldercare is a specialty — not all 
+  financial advisors understand Medicaid rules or elder-specific 
+  strategies"
+
+Questions to Start With as a Family:
+- "If something happened tomorrow, does our family know what 
+  to do and where everything is?"
+- "Does everyone have all five essential documents in place 
+  and up to date?"
+- "Have we talked honestly about care preferences — home vs. 
+  facility, end-of-life wishes?"
+- "Do we understand how we would pay for long-term care if 
+  needed?"
+- "Who is the point person in our family for these decisions?"
+
+Next Steps:
+1. "Start a Family Care Binder — a single place with all key 
+   documents, contacts, insurance information, and wishes"
+2. "Schedule a legal review with an Estate Planning or Elder 
+   Law Attorney"
+3. "Have the conversation — use our How to Talk to Your Parents 
+   About Planning guide as a starting point"
+4. "Meet with a financial advisor who specializes in eldercare 
+   to review long-term care funding options"
+
+Confirm all six sections were updated and which file was edited.
