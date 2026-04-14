@@ -61,7 +61,7 @@ export default function About() {
             </p>
             <p>
               The professionals who could help were excellent — but finding the right one, understanding what
-              questions to even ask, and knowing which type of expert you needed for which problem? That knowledge
+              questions to ask, and knowing which type of expert you needed for which problem? That knowledge
               wasn't available anywhere.
             </p>
             <p className="font-serif text-xl text-secondary italic border-l-4 border-primary pl-6 py-2 my-8">
@@ -116,6 +116,19 @@ export default function About() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Legal Disclaimer Panel */}
+      <section className="py-16 bg-amber-50 border-y border-amber-200">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <h2 className="font-serif text-2xl font-bold text-secondary mb-4">A Note on Our Content</h2>
+          <p className="text-foreground leading-relaxed">
+            ClearPath Elder Guide provides general educational information only. Nothing on this website constitutes
+            legal, financial, or medical advice. Every family's situation is unique — the information here is a
+            starting point, not a substitute for guidance from a qualified professional. Always consult a licensed
+            attorney, financial advisor, or healthcare provider for advice specific to your circumstances.
+          </p>
         </div>
       </section>
 
