@@ -73,7 +73,7 @@ export function EmailCapture() {
         </div>
         <h3 className="font-serif text-2xl font-semibold text-secondary mb-3">It's on its way.</h3>
         <p className="text-muted-foreground">
-          Check your inbox — and know that you've just taken the most important step: deciding to be prepared.
+          Check your inbox — and know that you've just taken the most important first step.
         </p>
       </div>
     );
@@ -94,10 +94,10 @@ export function EmailCapture() {
                 Free Download — Branded PDF
               </p>
               <h3 className="font-serif text-xl md:text-2xl font-bold leading-snug">
-                The Eldercare Crisis Checklist: What To Do, Who To Call, and What To Find in the First 72 Hours
+                Get the Free Eldercare Crisis Checklist
               </h3>
               <p className="text-sm text-secondary-foreground/70 mt-2">
-                From ClearPath Elder Guide — Plain-language guidance for NJ families
+                When something happens, you won't have time to figure out where to start. This checklist tells you exactly what to do, who to call, and what documents to find — in the first 72 hours.
               </p>
             </div>
           </div>
@@ -150,8 +150,7 @@ export function EmailCapture() {
             </Button>
           </form>
           <p className="text-xs text-muted-foreground text-center mt-3">
-            No spam. Unsubscribe anytime. This checklist is for general informational purposes only and does not
-            constitute legal, financial, or medical advice.
+            No spam. Unsubscribe anytime. Used by NJ families navigating eldercare.
           </p>
         </div>
       </div>
