@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck } from "lucide-react";
-import { generateBrief, type Brief, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
+import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin } from "lucide-react";
+import { generateBrief, type Brief, type StateContext, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
 interface BriefSection {
   icon: React.ReactNode;
@@ -74,6 +74,58 @@ function PriorityActionList({ actions }: { actions: string[] }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+function StateContextPanel({ ctx }: { ctx: StateContext }) {
+  return (
+    <div className="space-y-5">
+      {ctx.medicaid && (
+        <div>
+          <p className="text-xs font-semibold tracking-wider text-accent uppercase mb-3">Medicaid Reference (2026)</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 mb-3">
+            <div className="flex justify-between items-baseline border-b border-border pb-2">
+              <span className="text-sm text-muted-foreground font-medium">Individual asset limit</span>
+              <span className="text-sm font-semibold text-foreground">{ctx.medicaid.assetLimit}</span>
+            </div>
+            <div className="flex justify-between items-baseline border-b border-border pb-2">
+              <span className="text-sm text-muted-foreground font-medium">Monthly income limit</span>
+              <span className="text-sm font-semibold text-foreground">{ctx.medicaid.incomeLimit}</span>
+            </div>
+            {ctx.medicaid.csra !== "N/A — no spouse" && (
+              <div className="flex justify-between items-baseline border-b border-border pb-2 sm:col-span-2">
+                <span className="text-sm text-muted-foreground font-medium">Spouse may keep (CSRA)</span>
+                <span className="text-sm font-semibold text-foreground">{ctx.medicaid.csra}</span>
+              </div>
+            )}
+          </div>
+          {ctx.medicaid.assetComparison && (
+            <p className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 leading-relaxed mb-3">{ctx.medicaid.assetComparison}</p>
+          )}
+          <p className="text-xs text-muted-foreground leading-relaxed">{ctx.medicaid.lookbackNote}</p>
+          {ctx.medicaid.notes && (
+            <p className="text-xs text-muted-foreground leading-relaxed mt-2 italic">{ctx.medicaid.notes}</p>
+          )}
+        </div>
+      )}
+      {ctx.probate && (
+        <div>
+          <p className="text-xs font-semibold tracking-wider text-accent uppercase mb-3">Probate Reference</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 mb-3">
+            <div className="flex justify-between items-baseline border-b border-border pb-2">
+              <span className="text-sm text-muted-foreground font-medium">Minimum waiting period</span>
+              <span className="text-sm font-semibold text-foreground">{ctx.probate.minWait}</span>
+            </div>
+            <div className="flex justify-between items-baseline border-b border-border pb-2">
+              <span className="text-sm text-muted-foreground font-medium">Court confirmation</span>
+              <span className="text-sm font-semibold text-foreground">{ctx.probate.courtRequired ? "Required" : "May not be required"}</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">{ctx.probate.notes}</p>
+        </div>
+      )}
+      <p className="text-xs text-muted-foreground border-t border-border pt-3 italic leading-relaxed">{ctx.disclaimer}</p>
+    </div>
   );
 }
 
@@ -212,6 +264,11 @@ export default function Brief() {
       label: "What's Already Been Done",
       content: <p className="text-foreground leading-relaxed">{brief.alreadyDone}</p>,
     },
+    ...(brief.stateContext ? [{
+      icon: <MapPin className="w-5 h-5 text-accent" />,
+      label: "State Reference Data",
+      content: <StateContextPanel ctx={brief.stateContext} />,
+    }] : []),
   ];
 
   return (
