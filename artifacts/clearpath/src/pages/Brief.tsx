@@ -83,7 +83,17 @@ export default function Brief() {
     try {
       const assessment: AssessmentAnswers = JSON.parse(rawAssessment);
       const intake: IntakeAnswers = JSON.parse(rawIntake);
-      setBrief(generateBrief(assessment, intake));
+      const generated = generateBrief(assessment, intake);
+      setBrief(generated);
+
+      // Fire-and-forget: email the brief silently
+      fetch("/api/send-brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ brief: generated }),
+      }).catch(() => {
+        // Non-blocking — email failure doesn't affect the user experience
+      });
     } catch {
       setError(true);
     }
