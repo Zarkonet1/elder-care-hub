@@ -1,0 +1,168 @@
+# Replit Agent Prompt — Enrich Assessment Results
+
+Paste this entire prompt into the Replit agent chat.
+
+---
+
+The assessment results page at `/start` currently shows a thin output after the 5-question flow — just one resource card and two expert type tags. Replace this with rich, scenario-specific action plans that vary based on the user's answers.
+
+## What to build
+
+Find the results component rendered after the 5-question assessment completes. Replace the current output with a structured results page that reads the user's answers (particularly Q1: situation, and Q3: urgency) and renders the following five sections:
+
+1. **Your Action Plan** — numbered list of 5–6 prioritized steps specific to their situation
+2. **Documents to Find** — bullet list of documents/items to locate immediately
+3. **Who to Call First** — specific professional types with one-line explanations of why
+4. **Relevant Resources** — cards linking to the matching Resources page sections
+5. **Experts Who Can Help** — expert type tags + "Find an Expert in NJ" CTA (keep existing)
+
+If the user selected "Extremely urgent" in Q3, add a highlighted alert banner at the top of the results:
+> "You indicated this is urgent. Start with Step 1 right now — everything else can follow."
+
+---
+
+## Content for each scenario path
+
+### Path 1: "I recently lost a loved one" (any urgency)
+
+**Action Plan:**
+1. Get 10–12 certified copies of the death certificate from the funeral home — you will need more than you expect.
+2. Notify Social Security immediately — call 1-800-772-1213. Any payments received after the date of death must be returned.
+3. Locate the will or trust — if you don't know where it is, contact the attorney who drafted it.
+4. Do NOT distribute any assets yet — even if the will seems straightforward, probate or legal steps must come first.
+5. Open an estate bank account to receive incoming funds and pay estate expenses.
+6. Identify and secure all property — change locks if needed and notify homeowner's insurance of the death.
+
+**Documents to Find:**
+- Will or trust document
+- Certified death certificates (get at least 10–12)
+- Social Security card
+- Medicare and insurance cards
+- Financial account statements (bank, investment, retirement)
+- Property deeds and vehicle titles
+- Life insurance policies
+- Last 2 years of tax returns
+
+**Who to Call First:**
+- Estate or probate attorney — required before distributing any assets
+- Bank or financial institutions — to notify of death and understand next steps
+- Life insurance companies — to file claims (there are deadlines)
+
+**Expert Types:** Probate Attorney, Estate Planning Attorney
+
+---
+
+### Path 2: "In a crisis and need immediate help" (extremely urgent)
+
+**Action Plan:**
+1. Find out if the hospital admission is classified as "inpatient" or "observation status" — ask the charge nurse directly. This affects Medicare coverage significantly.
+2. Ask to speak with the hospital's discharge planner or social worker today — don't wait for them to come to you.
+3. Locate the Medicare card and any supplemental insurance cards now.
+4. Find out if a Durable Power of Attorney exists and where it is.
+5. Designate one family member as the single point of contact for the medical team — multiple voices create confusion.
+6. Do not accept the first discharge plan presented without asking questions — you have the right to request more time and evaluate options.
+
+**Documents to Find:**
+- Medicare card and any Medicare Advantage or supplement plan information
+- Durable Power of Attorney
+- Healthcare Proxy / Healthcare Power of Attorney
+- Advance Directive / Living Will
+- List of current medications and dosages
+
+**Who to Call First:**
+- Hospital social worker — ask for them by name, today
+- Elder law attorney — if Medicaid, asset protection, or legal documents are a concern
+- Geriatric care manager — if you need an independent advocate to evaluate care options quickly
+
+**Expert Types:** Elder Law Attorney, Geriatric Care Manager
+
+---
+
+### Path 3: "Managing ongoing care for a loved one"
+
+**Action Plan:**
+1. Request a written care plan from the current provider — if one doesn't exist, ask for it in writing.
+2. Understand exactly what Medicare is covering vs. what you are paying out of pocket — most families are surprised by the gaps.
+3. Research whether your loved one may qualify for Medicaid — even if they have assets, planning now protects more than waiting.
+4. Evaluate whether the current care setting is the right long-term fit given projected needs and costs.
+5. Confirm all legal documents are in place — Durable POA, Healthcare Proxy, and an up-to-date will.
+6. Create a contact list of all providers, insurers, and agencies involved in care — keep one copy at home and one digital.
+
+**Documents to Find:**
+- Current care agreements and care plan
+- Medicare Summary Notices
+- Insurance policies (Medicare supplement, long-term care)
+- Durable Power of Attorney
+- Financial account summary
+
+**Who to Call First:**
+- Geriatric care manager — for independent care coordination and options assessment
+- Elder law attorney — for Medicaid planning before assets are spent down
+- NJ SHIP counselor (free) — for Medicare questions, call 1-800-792-8820
+
+**Expert Types:** Geriatric Care Manager, Elder Law Attorney, Medicare Specialist
+
+---
+
+### Path 4: "Getting affairs in order"
+
+**Action Plan:**
+1. Make sure a Durable Power of Attorney is in place — this is the single most important document if something unexpected happens.
+2. Complete a Healthcare Proxy / Healthcare Power of Attorney designating who makes medical decisions.
+3. Create or update a will — if there is a trust, make sure it is properly funded.
+4. Create a simple one-page document listing all accounts, policies, and where to find everything — leave it somewhere your family can find.
+5. Review all beneficiary designations on retirement accounts and life insurance — these override the will and are often outdated.
+6. Tell at least one trusted person where your important documents are kept.
+
+**Documents to Find/Create:**
+- Durable Power of Attorney
+- Healthcare Proxy / Healthcare POA
+- Will or Trust (and confirm trust is funded)
+- Beneficiary designation forms for all retirement accounts and life insurance
+- Account and policy summary document
+
+**Who to Call First:**
+- Estate planning attorney — to draft or update documents
+- Financial advisor — to review and update beneficiary designations
+
+**Expert Types:** Estate Planning Attorney, Financial Planner
+
+---
+
+### Path 5: "I want to plan ahead" or "I'm an aging individual planning for myself"
+
+**Action Plan:**
+1. Understand your Medicare enrollment windows now — missing the Initial Enrollment Period results in permanent premium penalties.
+2. Research long-term care costs in your area — in New Jersey, nursing home care averages over $12,000/month.
+3. Evaluate whether long-term care insurance makes sense for your situation — it is far cheaper to buy at 60 than at 70.
+4. Make sure all legal documents are in place: Durable POA, Healthcare Proxy, will or trust.
+5. Have a direct conversation with family about your wishes, and make sure at least one person knows where your important documents are.
+6. Consider a free Medicare counseling session through NJ SHIP — call 1-800-792-8820.
+
+**Documents to Find/Create:**
+- Durable Power of Attorney
+- Healthcare Proxy / Healthcare POA
+- Will or Trust
+- Medicare card and current coverage summary
+- Long-term care insurance policy (if you have one)
+
+**Who to Call First:**
+- Elder law attorney — for Medicaid planning and legal documents
+- Medicare specialist — to review current or upcoming coverage
+- Financial planner specializing in eldercare — to evaluate long-term care funding
+
+**Expert Types:** Elder Law Attorney, Medicare Specialist, Financial Planner
+
+---
+
+## Design guidance
+
+- Use the existing site color palette and typography throughout
+- Action Plan: numbered steps, each step as its own row with a number badge
+- Documents: simple bulleted list in a light card
+- Who to Call: cards with professional type + one-line reason
+- Keep the existing "Experts Who Can Help" section with type tags and the "Find an Expert in NJ" CTA
+- Tone: calm, direct, practical — like advice from a knowledgeable friend who has been through it
+- No legal disclaimers within the results content (the site footer already handles this)
+
+After building, deploy the updated app.

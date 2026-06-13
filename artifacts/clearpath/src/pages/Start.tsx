@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ArrowRight, CheckCircle2, AlertTriangle, FileText, Phone, BookOpen, Users } from "lucide-react";
 
 const STEPS = [
   { number: 1, label: "What's happening right now?" },
@@ -306,132 +306,281 @@ export default function Start() {
   );
 }
 
+interface ResultPath {
+  headline: string;
+  introCopy: string;
+  actionPlan: string[];
+  documents: string[];
+  whoToCall: { type: string; reason: string }[];
+  resources: { title: string; href: string; desc: string }[];
+  experts: string[];
+}
+
+const RESULT_PATHS: Record<string, ResultPath> = {
+  loss: {
+    headline: "Here's What to Do Now",
+    introCopy: "The steps after a loved one passes can feel overwhelming — but they have an order, and following that order protects everyone. Here is what matters most right now.",
+    actionPlan: [
+      "Get 10–12 certified copies of the death certificate from the funeral home — you will need more than you expect.",
+      "Notify Social Security immediately — call 1-800-772-1213. Any payments received after the date of death must be returned.",
+      "Locate the will or trust — if you don't know where it is, contact the attorney who drafted it.",
+      "Do NOT distribute any assets yet — even if the will seems straightforward, probate or legal steps must come first.",
+      "Open an estate bank account to receive incoming funds and pay estate expenses.",
+      "Identify and secure all property — change locks if needed and notify homeowner's insurance of the death.",
+    ],
+    documents: [
+      "Will or trust document",
+      "Certified death certificates (get at least 10–12)",
+      "Social Security card",
+      "Medicare and insurance cards",
+      "Financial account statements (bank, investment, retirement)",
+      "Property deeds and vehicle titles",
+      "Life insurance policies",
+      "Last 2 years of tax returns",
+    ],
+    whoToCall: [
+      { type: "Estate or Probate Attorney", reason: "Required before distributing any assets" },
+      { type: "Bank or Financial Institutions", reason: "To notify of death and understand next steps" },
+      { type: "Life Insurance Companies", reason: "To file claims — there are deadlines" },
+    ],
+    resources: [
+      { title: "After a Loved One Passes", href: "/resources/after-passing", desc: "Practical guidance for the steps that can't wait — and the ones that can." },
+      { title: "Getting Affairs in Order", href: "/resources/estate-planning", desc: "Understanding wills, trusts, and estate documents in plain English." },
+    ],
+    experts: ["Probate Attorney", "Estate Planning Attorney"],
+  },
+
+  crisis: {
+    headline: "Here's Where to Start — Right Now",
+    introCopy: "You're dealing with something urgent, and that's exactly what this platform is built for. These steps are ordered by priority. Start at the top.",
+    actionPlan: [
+      "Find out if the hospital admission is classified as \"inpatient\" or \"observation status\" — ask the charge nurse directly. This affects Medicare coverage significantly.",
+      "Ask to speak with the hospital's discharge planner or social worker today — don't wait for them to come to you.",
+      "Locate the Medicare card and any supplemental insurance cards now.",
+      "Find out if a Durable Power of Attorney exists and where it is.",
+      "Designate one family member as the single point of contact for the medical team — multiple voices create confusion.",
+      "Do not accept the first discharge plan presented without asking questions — you have the right to request more time and evaluate options.",
+    ],
+    documents: [
+      "Medicare card and any Medicare Advantage or supplement plan information",
+      "Durable Power of Attorney",
+      "Healthcare Proxy / Healthcare Power of Attorney",
+      "Advance Directive / Living Will",
+      "List of current medications and dosages",
+    ],
+    whoToCall: [
+      { type: "Hospital Social Worker", reason: "Ask for them by name — today" },
+      { type: "Elder Law Attorney", reason: "If Medicaid, asset protection, or legal documents are a concern" },
+      { type: "Geriatric Care Manager", reason: "For an independent advocate to evaluate care options quickly" },
+    ],
+    resources: [
+      { title: "I'm In Crisis Right Now", href: "/resources/crisis", desc: "Immediate steps when a parent is hospitalized or urgent care is needed." },
+      { title: "Understanding Medicare & Medicaid", href: "/resources/medicare-medicaid", desc: "Coverage basics for hospital stays and rehabilitation." },
+    ],
+    experts: ["Elder Law Attorney", "Geriatric Care Manager"],
+  },
+
+  ongoing: {
+    headline: "Here's Your Path Forward",
+    introCopy: "Managing ongoing care involves a lot of moving parts — coverage, cost, care quality, and legal protection. Here's where to focus your energy.",
+    actionPlan: [
+      "Request a written care plan from the current provider — if one doesn't exist, ask for it in writing.",
+      "Understand exactly what Medicare is covering vs. what you are paying out of pocket — most families are surprised by the gaps.",
+      "Research whether your loved one may qualify for Medicaid — even if they have assets, planning now protects more than waiting.",
+      "Evaluate whether the current care setting is the right long-term fit given projected needs and costs.",
+      "Confirm all legal documents are in place — Durable POA, Healthcare Proxy, and an up-to-date will.",
+      "Create a contact list of all providers, insurers, and agencies involved in care — keep one copy at home and one digital.",
+    ],
+    documents: [
+      "Current care agreements and care plan",
+      "Medicare Summary Notices",
+      "Insurance policies (Medicare supplement, long-term care)",
+      "Durable Power of Attorney",
+      "Financial account summary",
+    ],
+    whoToCall: [
+      { type: "Geriatric Care Manager", reason: "For independent care coordination and options assessment" },
+      { type: "Elder Law Attorney", reason: "For Medicaid planning before assets are spent down" },
+      { type: "NJ SHIP Counselor (free)", reason: "For Medicare questions — call 1-800-792-8820" },
+    ],
+    resources: [
+      { title: "We Need Ongoing Care", href: "/resources/ongoing-care", desc: "Managing home care, assisted living, or nursing home decisions." },
+      { title: "Understanding Medicare & Medicaid", href: "/resources/medicare-medicaid", desc: "Making the most of your coverage for ongoing care." },
+    ],
+    experts: ["Geriatric Care Manager", "Elder Law Attorney", "Medicare Specialist"],
+  },
+
+  planning: {
+    headline: "Here's Where to Begin",
+    introCopy: "Getting affairs in order is one of the most valuable things you can do for your family. Here's a clear sequence — start with the most protective documents first.",
+    actionPlan: [
+      "Make sure a Durable Power of Attorney is in place — this is the single most important document if something unexpected happens.",
+      "Complete a Healthcare Proxy / Healthcare Power of Attorney designating who makes medical decisions.",
+      "Create or update a will — if there is a trust, make sure it is properly funded.",
+      "Create a simple one-page document listing all accounts, policies, and where to find everything — leave it somewhere your family can find.",
+      "Review all beneficiary designations on retirement accounts and life insurance — these override the will and are often outdated.",
+      "Tell at least one trusted person where your important documents are kept.",
+    ],
+    documents: [
+      "Durable Power of Attorney",
+      "Healthcare Proxy / Healthcare POA",
+      "Will or Trust (and confirm trust is funded)",
+      "Beneficiary designation forms for all retirement accounts and life insurance",
+      "Account and policy summary document",
+    ],
+    whoToCall: [
+      { type: "Estate Planning Attorney", reason: "To draft or update documents" },
+      { type: "Financial Advisor", reason: "To review and update beneficiary designations" },
+    ],
+    resources: [
+      { title: "Getting Affairs in Order", href: "/resources/estate-planning", desc: "The five essential documents every adult needs, explained in plain English." },
+      { title: "Planning Ahead", href: "/resources/plan-ahead", desc: "Essential conversations and preparations before a crisis arrives." },
+    ],
+    experts: ["Estate Planning Attorney", "Financial Planner"],
+  },
+
+  self: {
+    headline: "Here's Your Starting Point",
+    introCopy: "Planning for your own future care — while you can make your own decisions — is one of the most thoughtful things you can do for yourself and your family. Here is where to begin.",
+    actionPlan: [
+      "Understand your Medicare enrollment windows now — missing the Initial Enrollment Period results in permanent premium penalties.",
+      "Research long-term care costs in your area — in New Jersey, nursing home care averages over $12,000/month.",
+      "Evaluate whether long-term care insurance makes sense for your situation — it is far cheaper to buy at 60 than at 70.",
+      "Make sure all legal documents are in place: Durable POA, Healthcare Proxy, will or trust.",
+      "Have a direct conversation with family about your wishes, and make sure at least one person knows where your important documents are.",
+      "Consider a free Medicare counseling session through NJ SHIP — call 1-800-792-8820.",
+    ],
+    documents: [
+      "Durable Power of Attorney",
+      "Healthcare Proxy / Healthcare POA",
+      "Will or Trust",
+      "Medicare card and current coverage summary",
+      "Long-term care insurance policy (if you have one)",
+    ],
+    whoToCall: [
+      { type: "Elder Law Attorney", reason: "For Medicaid planning and legal documents" },
+      { type: "Medicare Specialist", reason: "To review current or upcoming coverage" },
+      { type: "Financial Planner (eldercare)", reason: "To evaluate long-term care funding options" },
+    ],
+    resources: [
+      { title: "Planning Ahead", href: "/resources/plan-ahead", desc: "Preparing for your own future care needs, on your terms." },
+      { title: "Understanding Medicare & Medicaid", href: "/resources/medicare-medicaid", desc: "Enrollment windows, coverage options, and NJ-specific guidance." },
+    ],
+    experts: ["Elder Law Attorney", "Medicare Specialist", "Financial Planner"],
+  },
+};
+
+const DEFAULT_PATH: ResultPath = {
+  headline: "Here's Where to Start",
+  introCopy: "Based on what you told us, here are the most important things to focus on right now.",
+  actionPlan: [
+    "Review the resource sections that match your situation.",
+    "Confirm that key legal documents are in place: Durable Power of Attorney, Healthcare Proxy, and a will.",
+    "Connect with a vetted expert when you're ready for a real conversation.",
+  ],
+  documents: ["Power of Attorney", "Healthcare Proxy", "Will or Trust"],
+  whoToCall: [{ type: "Elder Law Attorney", reason: "The most broadly useful first call for most eldercare situations" }],
+  resources: [{ title: "Browse All Resources", href: "/resources", desc: "Explore all our eldercare guidance topics." }],
+  experts: ["Elder Law Attorney"],
+};
+
 function Results({ answers }: { answers: any }) {
-  const isCrisis = answers.situation === "crisis" || answers.urgency === "extremely";
-  const isPlanner =
-    answers.situation === "planning" ||
-    answers.situation === "self" ||
-    answers.urgency === "not-urgent";
-
-  let resources: { title: string; href: string; desc: string }[] = [];
-  let experts: string[] = [];
-
-  switch (answers.situation) {
-    case "crisis":
-      resources = [
-        {
-          title: "Crisis Action Plan",
-          href: "/resources/crisis",
-          desc: "Immediate steps when a parent is hospitalized or urgent care is needed.",
-        },
-        {
-          title: "Understanding Medicare & Medicaid",
-          href: "/resources/medicare-medicaid",
-          desc: "Coverage basics for hospital stays and rehabilitation.",
-        },
-      ];
-      experts = ["Elder Law Attorney", "Geriatric Care Manager"];
-      break;
-    case "ongoing":
-      resources = [
-        {
-          title: "Long-Term Care Guide",
-          href: "/resources/ongoing-care",
-          desc: "Managing home care, assisted living, or nursing home decisions.",
-        },
-        {
-          title: "Understanding Medicare & Medicaid",
-          href: "/resources/medicare-medicaid",
-          desc: "Making the most of your coverage for ongoing care.",
-        },
-      ];
-      experts = ["Geriatric Care Manager", "Medicare Specialist"];
-      break;
-    case "planning":
-      resources = [
-        {
-          title: "Planning Ahead",
-          href: "/resources/plan-ahead",
-          desc: "Essential documents and conversations before a crisis arrives.",
-        },
-        {
-          title: "Estate Planning Basics",
-          href: "/resources/estate-planning",
-          desc: "Wills, trusts, and powers of attorney — in plain English.",
-        },
-      ];
-      experts = ["Estate Planning Attorney", "Financial Planner — Eldercare"];
-      break;
-    case "loss":
-      resources = [
-        {
-          title: "After a Loved One Passes",
-          href: "/resources/after-passing",
-          desc: "Practical guidance for the steps that can't wait — and the ones that can.",
-        },
-      ];
-      experts = ["Probate Attorney", "Estate Planning Attorney"];
-      break;
-    case "self":
-      resources = [
-        {
-          title: "Planning Ahead",
-          href: "/resources/plan-ahead",
-          desc: "Preparing for your own future care needs, on your terms.",
-        },
-        {
-          title: "Estate Planning",
-          href: "/resources/estate-planning",
-          desc: "Ensuring your wishes are clearly documented and legally protected.",
-        },
-      ];
-      experts = ["Elder Law Attorney", "Financial Planner — Eldercare"];
-      break;
-    default:
-      resources = [
-        { title: "Browse All Resources", href: "/resources", desc: "Explore all our eldercare guidance topics." },
-      ];
-      experts = ["Elder Law Attorney"];
-  }
-
-  const introCopy = isCrisis
-    ? "You're dealing with something urgent, and that's exactly what this platform is built for. Below are the resources most relevant to your situation — and the types of experts who can help when you're ready for specific guidance."
-    : isPlanner
-    ? "Planning ahead is the single most valuable thing a family can do — and you're already doing it. Here's a clear path through the things that matter most, in the order that makes sense."
-    : "Based on what you told us, these are the most important things to focus on right now.";
+  const path: ResultPath = RESULT_PATHS[answers.situation as string] ?? DEFAULT_PATH;
+  const isUrgent = answers.urgency === "extremely";
 
   return (
-    <div className="min-h-screen bg-background py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-background py-12 pb-24">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
 
         {/* Header */}
-        <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-accent/20 rounded-full mb-6">
+        <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-accent/20 rounded-full mb-5">
             <CheckCircle2 className="w-7 h-7 text-accent" />
           </div>
-          <h1 className="font-serif text-3xl md:text-5xl font-bold text-secondary mb-4">
-            Here's Where to Start
+          <h1 className="font-serif text-3xl md:text-4xl font-bold text-secondary mb-3">
+            {path.headline}
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            {introCopy}
+            {path.introCopy}
           </p>
         </div>
 
-        <div className="grid gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
 
-          {/* Recommended resources */}
-          <div className="bg-card border border-card-border rounded-2xl p-8 shadow-sm">
-            <h2 className="font-serif text-2xl font-semibold text-secondary mb-2">
-              Start With These Resources
-            </h2>
-            <p className="text-muted-foreground mb-6 text-sm">
-              Selected based on what you told us.
-            </p>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {resources.map((res, i) => (
+          {/* Urgent alert banner */}
+          {isUrgent && (
+            <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-4">
+              <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-red-800 text-sm leading-relaxed font-medium">
+                You indicated this is urgent. Start with Step 1 right now — everything else can follow.
+              </p>
+            </div>
+          )}
+
+          {/* 1. Action Plan */}
+          <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-secondary px-7 py-5 flex items-center gap-3">
+              <ArrowRight className="w-5 h-5 text-primary flex-shrink-0" />
+              <h2 className="font-serif text-xl font-semibold text-secondary-foreground">Your Action Plan</h2>
+            </div>
+            <div className="px-7 py-6 space-y-4">
+              {path.actionPlan.map((step, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary text-sm mt-0.5">
+                    {i + 1}
+                  </div>
+                  <p className="text-foreground leading-relaxed pt-1">{step}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 2. Documents to Find */}
+          <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-secondary/5 border-b border-border px-7 py-5 flex items-center gap-3">
+              <FileText className="w-5 h-5 text-accent flex-shrink-0" />
+              <h2 className="font-serif text-xl font-semibold text-secondary">Documents to Find</h2>
+            </div>
+            <ul className="px-7 py-6 space-y-2.5">
+              {path.documents.map((doc, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                  <span className="text-foreground leading-relaxed">{doc}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 3. Who to Call First */}
+          <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-secondary/5 border-b border-border px-7 py-5 flex items-center gap-3">
+              <Phone className="w-5 h-5 text-accent flex-shrink-0" />
+              <h2 className="font-serif text-xl font-semibold text-secondary">Who to Call First</h2>
+            </div>
+            <div className="px-7 py-6 space-y-3">
+              {path.whoToCall.map((contact, i) => (
+                <div key={i} className="flex items-start gap-4 bg-background border border-border rounded-xl px-4 py-3.5">
+                  <div className="w-2 h-2 rounded-full bg-accent mt-2 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-secondary text-sm">{contact.type}</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{contact.reason}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 4. Relevant Resources */}
+          <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-secondary/5 border-b border-border px-7 py-5 flex items-center gap-3">
+              <BookOpen className="w-5 h-5 text-accent flex-shrink-0" />
+              <h2 className="font-serif text-xl font-semibold text-secondary">Relevant Resources</h2>
+            </div>
+            <div className="px-7 py-6 grid sm:grid-cols-2 gap-4">
+              {path.resources.map((res, i) => (
                 <Link key={i} href={res.href}>
-                  <div className="block border border-border rounded-xl p-5 hover:border-primary hover:shadow-md transition-all h-full group bg-background cursor-pointer">
-                    <h3 className="font-serif font-semibold text-lg text-secondary group-hover:text-primary transition-colors mb-2">
+                  <div className="border border-border rounded-xl p-5 hover:border-primary hover:shadow-md transition-all h-full group bg-background cursor-pointer">
+                    <h3 className="font-serif font-semibold text-base text-secondary group-hover:text-primary transition-colors mb-1.5">
                       {res.title}
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{res.desc}</p>
@@ -439,40 +588,40 @@ function Results({ answers }: { answers: any }) {
                 </Link>
               ))}
             </div>
-            <div className="mt-6 text-center">
+            <div className="px-7 pb-6 text-center">
               <Link href="/resources">
-                <Button variant="outline" className="text-secondary border-secondary/30 hover:border-secondary">
+                <Button variant="outline" size="sm" className="text-secondary border-secondary/30 hover:border-secondary">
                   Browse All Resources
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Experts to consult */}
-          <div className="bg-card border border-card-border rounded-2xl p-8 shadow-sm">
-            <h2 className="font-serif text-2xl font-semibold text-secondary mb-2">
-              Experts Who Can Help
-            </h2>
-            <p className="text-muted-foreground mb-6 text-sm">
-              When you're ready for a real conversation, these are the professionals to speak with first.
-            </p>
-            <div className="flex flex-wrap gap-3 mb-8">
-              {experts.map((exp, i) => (
-                <div
-                  key={i}
-                  className="bg-secondary/10 text-secondary px-4 py-2 rounded-lg font-medium text-sm"
-                >
-                  {exp}
-                </div>
-              ))}
+          {/* 5. Experts Who Can Help */}
+          <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-secondary/5 border-b border-border px-7 py-5 flex items-center gap-3">
+              <Users className="w-5 h-5 text-accent flex-shrink-0" />
+              <h2 className="font-serif text-xl font-semibold text-secondary">Experts Who Can Help</h2>
             </div>
-            <div className="text-center">
-              <Link href="/experts">
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:w-auto">
-                  Find an Expert in NJ
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
+            <div className="px-7 py-6">
+              <p className="text-muted-foreground mb-5 text-sm leading-relaxed">
+                When you're ready for a real conversation, these are the professionals to speak with first.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-6">
+                {path.experts.map((exp, i) => (
+                  <div key={i} className="bg-secondary/10 text-secondary px-4 py-2 rounded-lg font-medium text-sm">
+                    {exp}
+                  </div>
+                ))}
+              </div>
+              <div className="text-center">
+                <Link href="/experts">
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:w-auto">
+                    Find an Expert in NJ
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
 
