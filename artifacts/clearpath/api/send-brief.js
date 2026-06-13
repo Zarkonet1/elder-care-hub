@@ -23,6 +23,41 @@ function formatBriefHtml(brief) {
           .join("")
       : `<li style="color:#9ca3af;font-style:italic">Nothing identified</li>`;
 
+  const priorityActionsHtml =
+    brief.priorityActions && brief.priorityActions.length > 0
+      ? brief.priorityActions
+          .map(
+            (action, i) =>
+              `<tr>
+                <td style="padding:10px 0;vertical-align:top;width:32px">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#f0f4ff;color:#4b6bfb;font-size:12px;font-weight:700">${i + 1}</span>
+                </td>
+                <td style="padding:10px 0 10px 12px;font-size:14px;color:#374151;line-height:1.5;border-bottom:1px solid #f3f4f6">${action}</td>
+              </tr>`
+          )
+          .join("")
+      : `<tr><td colspan="2" style="color:#9ca3af;font-style:italic;padding:8px 0">No specific actions identified</td></tr>`;
+
+  const redFlagsHtml =
+    brief.redFlags && brief.redFlags.length > 0
+      ? `
+    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:20px 24px;margin-bottom:28px">
+      <p style="margin:0 0 12px;font-size:12px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.08em">⚠ Important Notes</p>
+      ${brief.redFlags
+        .map(
+          (flag) =>
+            `<p style="margin:0 0 10px;font-size:14px;color:#7f1d1d;line-height:1.55">• ${flag}</p>`
+        )
+        .join("")}
+    </div>`
+      : "";
+
+  const professionalMatchHtml = brief.professionalMatch
+    ? `
+      <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#4b6bfb">${brief.professionalMatch.type}</p>
+      <p style="margin:0;font-size:14px;color:#374151;line-height:1.6">${brief.professionalMatch.reason}</p>`
+    : `<p style="color:#9ca3af;font-style:italic">Not specified</p>`;
+
   return `
 <!DOCTYPE html>
 <html>
@@ -37,6 +72,13 @@ function formatBriefHtml(brief) {
     </div>
 
     <div style="background:#ffffff;padding:32px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb">
+
+      ${redFlagsHtml}
+
+      <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">Priority Action List</h2>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:28px">
+        ${priorityActionsHtml}
+      </table>
 
       <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">Situation Overview</h2>
       <p style="margin:0 0 28px;color:#374151;line-height:1.65;font-size:15px">${brief.situationOverview}</p>
@@ -63,6 +105,9 @@ function formatBriefHtml(brief) {
 
       <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">What's Needed</h2>
       <p style="margin:0 0 28px;color:#374151;line-height:1.65;font-size:15px">${brief.whatNeeded}</p>
+
+      <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">Recommended Professional</h2>
+      <div style="margin-bottom:28px">${professionalMatchHtml}</div>
 
       <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">What's Already Been Done</h2>
       <p style="margin:0;color:#374151;line-height:1.65;font-size:15px">${brief.alreadyDone}</p>

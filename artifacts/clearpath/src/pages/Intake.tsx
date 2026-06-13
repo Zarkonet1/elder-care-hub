@@ -21,16 +21,19 @@ const US_STATES = [
 interface Question {
   module: string;
   moduleNum: number;
+  totalModules: number;
   key: keyof IntakeAnswers;
   question: string;
   type: "radio" | "dropdown";
   options?: string[];
+  hint?: string;
 }
 
 const QUESTIONS: Question[] = [
   {
     module: "Location",
     moduleNum: 1,
+    totalModules: 6,
     key: "state",
     question: "What state are you in?",
     type: "dropdown",
@@ -38,6 +41,7 @@ const QUESTIONS: Question[] = [
   {
     module: "About the person",
     moduleNum: 2,
+    totalModules: 6,
     key: "age",
     question: "How old is the person who needs help?",
     type: "radio",
@@ -46,6 +50,7 @@ const QUESTIONS: Question[] = [
   {
     module: "About the person",
     moduleNum: 2,
+    totalModules: 6,
     key: "living",
     question: "Where are they currently living?",
     type: "radio",
@@ -61,6 +66,7 @@ const QUESTIONS: Question[] = [
   {
     module: "About the person",
     moduleNum: 2,
+    totalModules: 6,
     key: "dementia",
     question: "Is there a diagnosis of dementia or cognitive decline?",
     type: "radio",
@@ -69,6 +75,7 @@ const QUESTIONS: Question[] = [
   {
     module: "Financial picture",
     moduleNum: 3,
+    totalModules: 6,
     key: "assets",
     question: "Roughly, what is the total value of assets? (home, savings, investments, retirement accounts combined)",
     type: "radio",
@@ -77,6 +84,7 @@ const QUESTIONS: Question[] = [
   {
     module: "Financial picture",
     moduleNum: 3,
+    totalModules: 6,
     key: "realEstate",
     question: "Is there a home or other real estate involved?",
     type: "radio",
@@ -85,14 +93,36 @@ const QUESTIONS: Question[] = [
   {
     module: "Financial picture",
     moduleNum: 3,
+    totalModules: 6,
     key: "retirement",
     question: "Are there retirement accounts (IRA, 401k, pension) or business interests?",
     type: "radio",
     options: ["Yes", "No", "Not sure"],
   },
   {
+    module: "Financial picture",
+    moduleNum: 3,
+    totalModules: 6,
+    key: "veteran",
+    question: "Is the person (or their spouse) a U.S. military veteran?",
+    type: "radio",
+    options: ["Yes", "No", "Not sure"],
+    hint: "Veterans may qualify for VA Aid & Attendance — a benefit that can cover $1,500–$2,300+/month in qualifying care costs.",
+  },
+  {
+    module: "Financial picture",
+    moduleNum: 3,
+    totalModules: 6,
+    key: "ltcInsurance",
+    question: "Is there long-term care insurance in place?",
+    type: "radio",
+    options: ["Yes", "No", "Not sure"],
+    hint: "Long-term care insurance can significantly change the funding picture for home care, assisted living, or memory care.",
+  },
+  {
     module: "Legal documents",
     moduleNum: 4,
+    totalModules: 6,
     key: "legalDocs",
     question: "Is there a will, a trust, or both?",
     type: "radio",
@@ -101,6 +131,7 @@ const QUESTIONS: Question[] = [
   {
     module: "Legal documents",
     moduleNum: 4,
+    totalModules: 6,
     key: "poa",
     question: "Is there a Power of Attorney for finances and a Healthcare Proxy?",
     type: "radio",
@@ -109,6 +140,7 @@ const QUESTIONS: Question[] = [
   {
     module: "Family",
     moduleNum: 5,
+    totalModules: 6,
     key: "spouse",
     question: "Is there a surviving spouse or domestic partner?",
     type: "radio",
@@ -117,6 +149,7 @@ const QUESTIONS: Question[] = [
   {
     module: "Family",
     moduleNum: 5,
+    totalModules: 6,
     key: "disputes",
     question: "Are there any known family disagreements about care decisions or the estate?",
     type: "radio",
@@ -125,6 +158,7 @@ const QUESTIONS: Question[] = [
   {
     module: "What's been done",
     moduleNum: 6,
+    totalModules: 6,
     key: "attorney",
     question: "Has an attorney been contacted about this situation yet?",
     type: "radio",
@@ -137,6 +171,7 @@ const TOTAL = QUESTIONS.length;
 const EMPTY_ANSWERS: IntakeAnswers = {
   state: "", age: "", living: "", dementia: "",
   assets: "", realEstate: "", retirement: "",
+  veteran: "", ltcInsurance: "",
   legalDocs: "", poa: "", spouse: "", disputes: "", attorney: "",
 };
 
@@ -229,14 +264,20 @@ export default function Intake() {
 
           <div className="px-7 pt-6 pb-3 border-b border-border bg-secondary/5">
             <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-0.5">
-              Module {q.moduleNum} of 6 — {q.module}
+              Module {q.moduleNum} of {q.totalModules} — {q.module}
             </p>
           </div>
 
           <div className="px-7 py-7">
-            <h2 className="font-serif text-xl md:text-2xl font-semibold text-secondary mb-6 leading-snug">
+            <h2 className="font-serif text-xl md:text-2xl font-semibold text-secondary mb-3 leading-snug">
               {q.question}
             </h2>
+
+            {q.hint && (
+              <p className="text-sm text-muted-foreground bg-secondary/5 border border-border rounded-xl px-4 py-3 mb-5 leading-relaxed">
+                {q.hint}
+              </p>
+            )}
 
             {q.type === "dropdown" ? (
               <div>

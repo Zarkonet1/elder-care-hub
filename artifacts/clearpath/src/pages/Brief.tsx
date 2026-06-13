@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck } from "lucide-react";
 import { generateBrief, type Brief, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
 interface BriefSection {
@@ -57,6 +57,43 @@ function LegalColumns({ inPlace, missing }: { inPlace: string[]; missing: string
             ))}
           </ul>
         )}
+      </div>
+    </div>
+  );
+}
+
+function PriorityActionList({ actions }: { actions: string[] }) {
+  return (
+    <ol className="space-y-3">
+      {actions.map((action, i) => (
+        <li key={i} className="flex items-start gap-4">
+          <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary text-sm font-bold flex items-center justify-center mt-0.5">
+            {i + 1}
+          </span>
+          <span className="text-sm text-foreground leading-relaxed pt-1">{action}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function RedFlagsBanner({ flags }: { flags: string[] }) {
+  if (flags.length === 0) return null;
+  return (
+    <div className="bg-red-50 border border-red-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-red-100/70 border-b border-red-200 px-7 py-5 flex items-center gap-3">
+        <AlertTriangle className="w-5 h-5 text-red-600" />
+        <h2 className="font-serif text-lg font-semibold text-red-800">
+          {flags.length === 1 ? "Important Note" : "Important Notes"}
+        </h2>
+      </div>
+      <div className="px-7 py-6 space-y-3">
+        {flags.map((flag, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <span className="flex-shrink-0 w-2 h-2 rounded-full bg-red-500 mt-2" />
+            <p className="text-sm text-red-900 leading-relaxed">{flag}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -131,6 +168,11 @@ export default function Brief() {
 
   const sections: BriefSection[] = [
     {
+      icon: <ListOrdered className="w-5 h-5 text-accent" />,
+      label: "Priority Action List",
+      content: <PriorityActionList actions={brief.priorityActions} />,
+    },
+    {
       icon: <ClipboardList className="w-5 h-5 text-accent" />,
       label: "Situation Overview",
       content: <p className="text-foreground leading-relaxed">{brief.situationOverview}</p>,
@@ -156,6 +198,16 @@ export default function Brief() {
       content: <p className="text-foreground leading-relaxed">{brief.whatNeeded}</p>,
     },
     {
+      icon: <UserCheck className="w-5 h-5 text-accent" />,
+      label: "Recommended Professional",
+      content: (
+        <div>
+          <p className="text-sm font-semibold text-primary mb-2">{brief.professionalMatch.type}</p>
+          <p className="text-foreground leading-relaxed text-sm">{brief.professionalMatch.reason}</p>
+        </div>
+      ),
+    },
+    {
       icon: <Phone className="w-5 h-5 text-accent" />,
       label: "What's Already Been Done",
       content: <p className="text-foreground leading-relaxed">{brief.alreadyDone}</p>,
@@ -179,6 +231,10 @@ export default function Brief() {
         </div>
 
         <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+
+          {brief.redFlags.length > 0 && (
+            <RedFlagsBanner flags={brief.redFlags} />
+          )}
 
           {sections.map((section, i) => (
             <div key={i} className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
