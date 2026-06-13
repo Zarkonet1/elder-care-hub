@@ -1,14 +1,4 @@
-interface Brief {
-  situationOverview: string;
-  keyFacts: { label: string; value: string }[];
-  legalInPlace: string[];
-  legalMissing: string[];
-  familyContext: string;
-  whatNeeded: string;
-  alreadyDone: string;
-}
-
-function formatBriefHtml(brief: Brief): string {
+function formatBriefHtml(brief) {
   const keyFactsRows = brief.keyFacts
     .map(
       (f) =>
@@ -88,10 +78,7 @@ function formatBriefHtml(brief: Brief): string {
 </html>`;
 }
 
-export default async function handler(
-  req: { method: string; body: { brief: Brief } },
-  res: { status: (code: number) => { json: (body: unknown) => void } }
-) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
