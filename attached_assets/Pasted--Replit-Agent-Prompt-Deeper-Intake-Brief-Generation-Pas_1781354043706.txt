@@ -1,0 +1,207 @@
+# Replit Agent Prompt — Deeper Intake & Brief Generation
+
+Paste this entire prompt into the Replit agent chat.
+
+---
+
+Add a "deeper intake" flow and brief generation feature to the existing app. This builds on the current 5-question assessment and results page.
+
+## Overview of what to build
+
+1. **CTA on the results page** — a prompt at the bottom inviting users to answer more questions and get connected with a professional
+2. **Deeper intake flow** — 12 additional multiple-choice questions across 6 short modules
+3. **Brief generation** — a structured professional summary built from the user's answers
+4. **Brief review screen** — user sees the brief before sending, with a "Connect Me with a Professional" button (placeholder for now — just show a confirmation message)
+
+---
+
+## Part 1: Add CTA to the results page
+
+At the bottom of the results page, below the "Experts Who Can Help" section, add a new section with a distinct background (light warm tone, slightly set apart from the rest of the page):
+
+**Headline:** "Want Personalized Help?"
+
+**Body text:** "Answer a few more questions and we'll prepare a brief summary of your situation — so a professional already understands your case before you ever speak to them. No names required. Takes about 3 minutes."
+
+**Button:** "Get Matched with a Professional →" (gold/amber, same style as existing CTAs)
+
+Clicking this button opens the deeper intake flow (new page at `/intake` or as a continuation of the existing `/start` flow — your choice based on what's cleaner in the codebase).
+
+---
+
+## Part 2: Deeper intake — 12 questions across 6 modules
+
+The intake should feel like a natural extension of the assessment — same design language, same progress bar, same card layout. Each module is a brief pause with a short label ("About the person", "Financial picture", etc.) displayed above the question.
+
+All questions are multiple choice. No free-text fields.
+
+### Module 1 — Location (1 question)
+
+**Q1:** What state are you in?
+*Dropdown of all 50 US states + DC*
+
+---
+
+### Module 2 — About the person (3 questions)
+
+**Q2:** How old is the person who needs help?
+- Under 65
+- 65–75
+- 75–85
+- 85 or older
+
+**Q3:** Where are they currently living?
+- At home, alone
+- At home with family
+- Assisted living or independent living
+- Memory care facility
+- Nursing home or rehab facility
+- Currently in the hospital
+
+**Q4:** Is there a diagnosis of dementia or cognitive decline?
+- Yes
+- No
+- Not sure
+
+---
+
+### Module 3 — Financial picture (3 questions)
+
+**Q5:** Roughly, what is the total value of assets? (Include home, savings, investments, retirement accounts)
+- Under $100,000
+- $100,000 – $500,000
+- $500,000 – $1,000,000
+- Over $1,000,000
+- Not sure
+
+**Q6:** Is there a home or other real estate involved?
+- Yes
+- No
+- Not sure
+
+**Q7:** Are there retirement accounts (IRA, 401k, pension) or business interests?
+- Yes
+- No
+- Not sure
+
+---
+
+### Module 4 — Legal documents (2 questions)
+
+**Q8:** Is there a will, a trust, or both?
+- Will only
+- Trust only
+- Both a will and a trust
+- Neither
+- Not sure
+
+**Q9:** Is there a Power of Attorney for finances and a Healthcare Proxy?
+- Yes, both are in place
+- One exists but not the other
+- Neither exists
+- Not sure
+
+---
+
+### Module 5 — Family (2 questions)
+
+**Q10:** Is there a surviving spouse or domestic partner?
+- Yes
+- No
+
+**Q11:** Are there any known family disagreements about care decisions or the estate?
+- Yes
+- No
+- Possibly
+
+---
+
+### Module 6 — What's been done (1 question)
+
+**Q12:** Has an attorney been contacted about this situation yet?
+- Yes, we've spoken with one
+- Not yet
+- Not sure
+
+---
+
+The final screen of the intake (after Q12) should show a "Generate My Brief →" button. Clicking it builds the brief and navigates to the brief review screen.
+
+---
+
+## Part 3: Brief generation
+
+Generate the brief entirely from the intake answers — no external API call needed. Use the answers to fill a structured template with the following sections. Store the intake answers in component state and pass them to a `generateBrief()` function that returns the brief as a structured object.
+
+### Brief structure
+
+**Section 1 — Situation Overview**
+A 2–3 sentence plain-language summary synthesizing the scenario. Use the situation type from Q1 of the original assessment (already in state) combined with the intake answers.
+
+Examples:
+- "An adult child is managing the estate of a recently deceased parent in [State]. A will is in place. The estate includes real estate and retirement accounts, with a total estimated value in the $500K–$1M range."
+- "A family is seeking elder law guidance for a parent, currently in a nursing home in [State], with a dementia diagnosis. No Power of Attorney or Healthcare Proxy is currently in place."
+
+**Section 2 — Key Facts**
+Display as a clean two-column grid of label/value pairs:
+- State: [Q1]
+- Age range: [Q2]
+- Current setting: [Q3]
+- Cognitive decline: [Q4]
+- Estimated assets: [Q5]
+- Real estate involved: [Q6]
+- Retirement/business interests: [Q7]
+- Urgency: [from original assessment Q3]
+
+**Section 3 — Legal Documents**
+Two sub-lists side by side:
+- In place: [list based on Q8, Q9, and original assessment Q4]
+- Missing or unknown: [remainder]
+
+**Section 4 — Family Context**
+Short 1–2 sentence summary using Q10 and Q11:
+- "Surviving spouse is present. No known family disputes."
+- "No surviving spouse. Potential family disagreements noted — professional should be aware."
+
+**Section 5 — What's Needed**
+1–2 sentences derived from the situation type and the original assessment Q5 (concerns):
+- "Family is seeking guidance on probate process and asset distribution."
+- "Family needs Medicaid planning support and help establishing legal documents urgently."
+
+**Section 6 — What's Already Been Done**
+One sentence from Q12:
+- "An attorney has already been consulted."
+- "No attorney has been contacted yet."
+
+---
+
+## Part 4: Brief review screen
+
+Show the generated brief on a clean review screen at `/brief` (or equivalent).
+
+**Page headline:** "Your Situation Summary"
+
+**Subhead:** "This is what a professional will see before speaking with you. No personal identifying information is included."
+
+Display all 6 sections of the brief in a clean, readable layout — use cards or bordered sections to separate each one.
+
+Below the brief, add two elements:
+
+1. A reassurance note in smaller text: *"Your name, address, and contact information are not included in this summary. You control what gets shared and when."*
+
+2. A large CTA button: **"Connect Me with a Professional →"** (gold/amber)
+
+For now, clicking the button should show a simple confirmation message on the same page:
+> "Thank you — your brief has been submitted. A professional in your area will review it and reach out if they're a good fit. This feature is coming soon — check back shortly."
+
+---
+
+## Design guidance
+
+- Match the existing site design throughout — same colors, fonts, card styles
+- Module labels (e.g. "About the person") should appear as a small, muted label above each question card, so users understand there's structure to the flow
+- Progress bar should continue from the assessment (or restart at 1 of 12 for the intake — either is fine)
+- The brief review screen should feel polished and trustworthy — this is what convinces the user the platform knows what it's doing
+- Tone of all generated text: calm, professional, plain English — like a knowledgeable friend summarizing a situation to a colleague
+
+After building, deploy the updated app.

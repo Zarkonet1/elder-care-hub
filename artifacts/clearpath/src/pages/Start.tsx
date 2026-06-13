@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -485,7 +485,13 @@ const DEFAULT_PATH: ResultPath = {
 };
 
 function Results({ answers }: { answers: any }) {
+  const [, navigate] = useLocation();
   const path: ResultPath = RESULT_PATHS[answers.situation as string] ?? DEFAULT_PATH;
+
+  const handleGetMatched = () => {
+    localStorage.setItem("clearpath_assessment", JSON.stringify(answers));
+    navigate("/intake");
+  };
   const isUrgent = answers.urgency === "extremely";
 
   return (
@@ -623,6 +629,24 @@ function Results({ answers }: { answers: any }) {
                 </Link>
               </div>
             </div>
+          </div>
+
+          {/* Get Matched CTA */}
+          <div className="bg-[#FDF6E8] border border-primary/20 rounded-2xl px-7 py-8 text-center">
+            <h2 className="font-serif text-2xl font-bold text-secondary mb-3">
+              Want Personalized Help?
+            </h2>
+            <p className="text-muted-foreground leading-relaxed max-w-lg mx-auto mb-6">
+              Answer a few more questions and we'll prepare a brief summary of your situation — so a professional already understands your case before you ever speak to them. No names required. Takes about 3 minutes.
+            </p>
+            <Button
+              size="lg"
+              onClick={handleGetMatched}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 w-full sm:w-auto"
+            >
+              Get Matched with a Professional
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
 
         </div>

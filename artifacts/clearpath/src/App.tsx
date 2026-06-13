@@ -11,6 +11,8 @@ import Experts from "@/pages/Experts";
 import ExpertProfile from "@/pages/ExpertProfile";
 import About from "@/pages/About";
 import Checklist from "@/pages/Checklist";
+import Intake from "@/pages/Intake";
+import Brief from "@/pages/Brief";
 
 import { Layout } from "@/components/Layout";
 import { StickyNav } from "@/components/StickyNav";
@@ -29,6 +31,8 @@ function Router() {
       <Route path="/experts/:id" component={ExpertProfile} />
       <Route path="/about" component={About} />
       <Route path="/checklist" component={Checklist} />
+      <Route path="/intake" component={Intake} />
+      <Route path="/brief" component={Brief} />
       <Route component={NotFound} />
     </Switch>
   );
