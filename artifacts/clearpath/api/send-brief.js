@@ -159,6 +159,16 @@ function formatBriefHtml(brief) {
         </table>
         <p style="margin:0 0 8px;font-size:12px;color:#6b7280;line-height:1.5">${brief.stateContext.probate.notes}</p>
       ` : ""}
+      ${brief.stateContext.propertyTools ? `
+        <p style="margin:16px 0 8px;font-size:11px;font-weight:700;color:#4b6bfb;text-transform:uppercase;letter-spacing:0.08em">Property Planning Tools</p>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:8px">
+          <tr>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-size:13px">Transfer on Death deed</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-weight:600;font-size:13px;text-align:right">${brief.stateContext.propertyTools.todDeed}</td>
+          </tr>
+        </table>
+        <p style="margin:0 0 8px;font-size:12px;color:#6b7280;line-height:1.5">${brief.stateContext.propertyTools.todDeedNote}</p>
+      ` : ""}
       <p style="margin:12px 0 0;font-size:11px;color:#9ca3af;font-style:italic;border-top:1px solid #f3f4f6;padding-top:8px">${brief.stateContext.disclaimer}</p>
       ` : ""}
 

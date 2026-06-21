@@ -18,6 +18,8 @@ export interface IntakeAnswers {
   realEstate: string;
   propertyTitle: string;
   todDeed: string;
+  mortgageStatus: string;
+  propertyUse: string;
   retirement: string;
   veteran: string;
   ltcInsurance: string;
@@ -41,6 +43,10 @@ export interface StateContext {
     minWait: string;
     courtRequired: boolean;
     notes: string;
+  };
+  propertyTools?: {
+    todDeed: string;
+    todDeedNote: string;
   };
   disclaimer: string;
 }
@@ -75,60 +81,61 @@ interface StateInfo {
   probateCourtReq: boolean;
   probateNotes: string;
   medicaidNotes?: string;
+  todDeed: string;         // "Allowed" | "Lady Bird deed only" | "Not allowed" | "Not confirmed — verify locally"
 }
 
 const STATE_DATA: Record<string, StateInfo> = {
-  "Alabama":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Full process typically 9–18 months." },
-  "Alaska":           { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "Arizona":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Small estates may use affidavit procedure. Full process 6–12 months." },
-  "Arkansas":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Statutory minimum before final distribution. Full process 9–15 months." },
-  "California":       { assetLimit: "$130,000",  csra: "$162,660",          incomeLimit: "~$1,800/mo", probateWait: "9–18 months",probateCourtReq: true,  probateNotes: "California probate is among the slowest and most expensive. Complex estates can exceed 2 years.", medicaidNotes: "California reimplemented asset limits effective 1/1/26. Asset limit for couples: $195,000." },
-  "Colorado":         { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "5 months",   probateCourtReq: true,  probateNotes: "Petition and confirmation hearing required. Full process 6–12 months." },
-  "Connecticut":      { assetLimit: "$1,600",    csra: "$50,000–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Final settlement hearing required. Full process 9–15 months.", medicaidNotes: "CT individual asset limit is $1,600. Minimum CSRA is $50,000." },
-  "Delaware":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,485/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Shorter if all parties consent. Full process 6–12 months.", medicaidNotes: "Delaware uses 250% FBR income limit ($2,485/mo), lower than most states." },
-  "Florida":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "3 months",   probateCourtReq: true,  probateNotes: "Formal administration requires court order. Full process 6–12 months." },
-  "Georgia":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Duration depends on estate complexity. Full process 9–18 months." },
-  "Hawaii":           { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "Idaho":            { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "2 months",   probateCourtReq: true,  probateNotes: "Small estates may bypass probate. Full process typically 4–9 months." },
-  "Illinois":         { assetLimit: "$17,500",   csra: "$135,648",          incomeLimit: "~$1,304/mo", probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Probate petition and court confirmation required. Full process 9–18 months.", medicaidNotes: "Illinois has a higher individual asset limit ($17,500) and a fixed CSRA of $135,648. Income limit is approximately 100% FPL." },
-  "Indiana":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "3 months",   probateCourtReq: true,  probateNotes: "Preliminary hearing required in most counties. Full process 6–12 months." },
-  "Iowa":             { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Probate estate hearing required. Full process 6–12 months." },
-  "Kansas":           { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "3 months",   probateCourtReq: true,  probateNotes: "Formal probate hearing required. Full process 6–12 months." },
-  "Kentucky":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Court oversees final accounting. Full process 9–15 months." },
-  "Louisiana":        { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Succession court confirms; longer if disputes. Full process 6–12 months." },
-  "Maine":            { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Full process typically 9–15 months." },
-  "Maryland":         { assetLimit: "$2,500",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.", medicaidNotes: "Maryland individual asset limit is $2,500." },
-  "Massachusetts":    { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Must wait for creditors to file claims. Full process 9–18 months." },
-  "Michigan":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Notice period before confirmation. Full process 6–12 months." },
-  "Minnesota":        { assetLimit: "$3,000",    csra: "$162,660",          incomeLimit: "~$1,304/mo", probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Formal and informal matters vary. Full process 9–15 months.", medicaidNotes: "Minnesota individual asset limit is $3,000. Income limit is approximately 100% FPL." },
-  "Mississippi":      { assetLimit: "$4,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Court hearing required for distribution. Full process 9–15 months.", medicaidNotes: "Mississippi individual asset limit is $4,000 for couples." },
-  "Missouri":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Probate courts oversee final decree. Full process 9–15 months." },
-  "Montana":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "Nebraska":         { assetLimit: "$4,000",    csra: "$32,532–$162,660",  incomeLimit: "~$1,304/mo", probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.", medicaidNotes: "Nebraska individual asset limit is $4,000. Income limit is approximately 100% FPL." },
-  "Nevada":           { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "New Hampshire":    { assetLimit: "$2,500",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.", medicaidNotes: "New Hampshire individual asset limit is $2,500." },
-  "New Jersey":       { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Formal probate usually required. Full process 9–18 months." },
-  "New Mexico":       { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "New York":         { assetLimit: "$32,396",   csra: "$74,820–$162,660",  incomeLimit: "~$1,800/mo", probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Creditors must be notified before final decree. Full process 9–18 months.", medicaidNotes: "New York has a significantly higher individual asset limit ($32,396) and higher minimum CSRA ($74,820). Income limit is approximately 138% FPL." },
-  "North Carolina":   { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "~$1,304/mo", probateWait: "5 months",   probateCourtReq: true,  probateNotes: "Letters testamentary issued; hearing if estate over $5k. Full process 6–12 months.", medicaidNotes: "North Carolina income limit is approximately 100% FPL." },
-  "North Dakota":     { assetLimit: "$3,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.", medicaidNotes: "North Dakota individual asset limit is $3,000." },
-  "Ohio":             { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Journal entry for settlement; hearing if needed. Full process 9–15 months." },
-  "Oklahoma":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "Oregon":           { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "Pennsylvania":     { assetLimit: "$2,400",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Orphans' Court issues final decree. Full process 9–18 months.", medicaidNotes: "Pennsylvania individual asset limit is $2,400." },
-  "Rhode Island":     { assetLimit: "$4,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.", medicaidNotes: "Rhode Island individual asset limit is $4,000." },
-  "South Carolina":   { assetLimit: "$2,000",    csra: "$66,480",           incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Court confirmation required for estate completion. Full process 9–15 months.", medicaidNotes: "South Carolina uses a fixed CSRA of $66,480." },
-  "South Dakota":     { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "Tennessee":        { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "3–6 months", probateCourtReq: true,  probateNotes: "Timeline depends on estate type and assets. Full process 6–12 months." },
-  "Texas":            { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Court hearing to grant probate. Full process 6–12 months." },
-  "Utah":             { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "~$1,304/mo", probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Court order required to close estate. Full process 6–12 months.", medicaidNotes: "Utah income limit is approximately 100% FPL." },
-  "Vermont":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
-  "Virginia":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "5 months",   probateCourtReq: true,  probateNotes: "Estate settlement period before distribution. Full process 6–12 months." },
-  "Washington":       { assetLimit: "$2,000",    csra: "$72,529–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.", medicaidNotes: "Washington minimum CSRA is $72,529." },
-  "Washington D.C.":  { assetLimit: "$4,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.", medicaidNotes: "D.C. individual asset limit is $4,000." },
-  "West Virginia":    { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",   probateCourtReq: true,  probateNotes: "Full process typically 9–15 months." },
-  "Wisconsin":        { assetLimit: "$2,000",    csra: "$50,000–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Formal probate hearing required. Full process 6–12 months.", medicaidNotes: "Wisconsin minimum CSRA is $50,000." },
-  "Wyoming":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
+  "Alabama":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Full process typically 9–18 months.",                                                                                  todDeed: "Not allowed" },
+  "Alaska":           { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
+  "Arizona":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Small estates may use affidavit procedure. Full process 6–12 months.",                                                  todDeed: "Allowed" },
+  "Arkansas":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Statutory minimum before final distribution. Full process 9–15 months.",                                               todDeed: "Allowed" },
+  "California":       { assetLimit: "$130,000",  csra: "$162,660",          incomeLimit: "~$1,800/mo", probateWait: "9–18 months", probateCourtReq: true,  probateNotes: "California probate is among the slowest and most expensive. Complex estates can exceed 2 years.",                      todDeed: "Allowed",                medicaidNotes: "California reimplemented asset limits effective 1/1/26. Asset limit for couples: $195,000." },
+  "Colorado":         { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "5 months",    probateCourtReq: true,  probateNotes: "Petition and confirmation hearing required. Full process 6–12 months.",                                                 todDeed: "Allowed" },
+  "Connecticut":      { assetLimit: "$1,600",    csra: "$50,000–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Final settlement hearing required. Full process 9–15 months.",                                                          todDeed: "Not allowed",            medicaidNotes: "CT individual asset limit is $1,600. Minimum CSRA is $50,000." },
+  "Delaware":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,485/mo",  probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Shorter if all parties consent. Full process 6–12 months.",                                                            todDeed: "Not confirmed — verify locally", medicaidNotes: "Delaware uses 250% FBR income limit ($2,485/mo), lower than most states." },
+  "Florida":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "3 months",    probateCourtReq: true,  probateNotes: "Formal administration requires court order. Full process 6–12 months.",                                                 todDeed: "Lady Bird deed only" },
+  "Georgia":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Duration depends on estate complexity. Full process 9–18 months.",                                                      todDeed: "Allowed" },
+  "Hawaii":           { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
+  "Idaho":            { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "2 months",    probateCourtReq: true,  probateNotes: "Small estates may bypass probate. Full process typically 4–9 months.",                                                  todDeed: "Not allowed" },
+  "Illinois":         { assetLimit: "$17,500",   csra: "$135,648",          incomeLimit: "~$1,304/mo", probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Probate petition and court confirmation required. Full process 9–18 months.",                                           todDeed: "Allowed",                medicaidNotes: "Illinois has a higher individual asset limit ($17,500) and a fixed CSRA of $135,648. Income limit is approximately 100% FPL." },
+  "Indiana":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "3 months",    probateCourtReq: true,  probateNotes: "Preliminary hearing required in most counties. Full process 6–12 months.",                                              todDeed: "Allowed" },
+  "Iowa":             { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Probate estate hearing required. Full process 6–12 months.",                                                            todDeed: "Not allowed" },
+  "Kansas":           { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "3 months",    probateCourtReq: true,  probateNotes: "Formal probate hearing required. Full process 6–12 months.",                                                            todDeed: "Allowed" },
+  "Kentucky":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Court oversees final accounting. Full process 9–15 months.",                                                            todDeed: "Not allowed" },
+  "Louisiana":        { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Succession court confirms; longer if disputes. Full process 6–12 months.",                                              todDeed: "Not allowed" },
+  "Maine":            { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.",                                                                                  todDeed: "Not allowed" },
+  "Maryland":         { assetLimit: "$2,500",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.",                                                                                  todDeed: "Not allowed",            medicaidNotes: "Maryland individual asset limit is $2,500." },
+  "Massachusetts":    { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Must wait for creditors to file claims. Full process 9–18 months.",                                                    todDeed: "Not allowed" },
+  "Michigan":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Notice period before confirmation. Full process 6–12 months.",                                                          todDeed: "Lady Bird deed only" },
+  "Minnesota":        { assetLimit: "$3,000",    csra: "$162,660",          incomeLimit: "~$1,304/mo", probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Formal and informal matters vary. Full process 9–15 months.",                                                           todDeed: "Allowed",                medicaidNotes: "Minnesota individual asset limit is $3,000. Income limit is approximately 100% FPL." },
+  "Mississippi":      { assetLimit: "$4,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Court hearing required for distribution. Full process 9–15 months.",                                                    todDeed: "Allowed",                medicaidNotes: "Mississippi individual asset limit is $4,000 for couples." },
+  "Missouri":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Probate courts oversee final decree. Full process 9–15 months.",                                                        todDeed: "Allowed" },
+  "Montana":          { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
+  "Nebraska":         { assetLimit: "$4,000",    csra: "$32,532–$162,660",  incomeLimit: "~$1,304/mo", probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed",                medicaidNotes: "Nebraska individual asset limit is $4,000. Income limit is approximately 100% FPL." },
+  "Nevada":           { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
+  "New Hampshire":    { assetLimit: "$2,500",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.",                                                                                  todDeed: "Not allowed",            medicaidNotes: "New Hampshire individual asset limit is $2,500." },
+  "New Jersey":       { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Formal probate usually required. Full process 9–18 months.",                                                            todDeed: "Not confirmed — verify locally" },
+  "New Mexico":       { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
+  "New York":         { assetLimit: "$32,396",   csra: "$74,820–$162,660",  incomeLimit: "~$1,800/mo", probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Creditors must be notified before final decree. Full process 9–18 months.",                                             todDeed: "Allowed",                medicaidNotes: "New York has a significantly higher individual asset limit ($32,396) and higher minimum CSRA ($74,820). Income limit is approximately 138% FPL." },
+  "North Carolina":   { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "~$1,304/mo", probateWait: "5 months",    probateCourtReq: true,  probateNotes: "Letters testamentary issued; hearing if estate over $5k. Full process 6–12 months.",                                   todDeed: "Not allowed",            medicaidNotes: "North Carolina income limit is approximately 100% FPL." },
+  "North Dakota":     { assetLimit: "$3,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed",                medicaidNotes: "North Dakota individual asset limit is $3,000." },
+  "Ohio":             { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Journal entry for settlement; hearing if needed. Full process 9–15 months.",                                            todDeed: "Allowed" },
+  "Oklahoma":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Not confirmed — verify locally" },
+  "Oregon":           { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
+  "Pennsylvania":     { assetLimit: "$2,400",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Orphans' Court issues final decree. Full process 9–18 months.",                                                         todDeed: "Not allowed",            medicaidNotes: "Pennsylvania individual asset limit is $2,400." },
+  "Rhode Island":     { assetLimit: "$4,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.",                                                                                  todDeed: "Not allowed",            medicaidNotes: "Rhode Island individual asset limit is $4,000." },
+  "South Carolina":   { assetLimit: "$2,000",    csra: "$66,480",           incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Court confirmation required for estate completion. Full process 9–15 months.",                                          todDeed: "Not allowed",            medicaidNotes: "South Carolina uses a fixed CSRA of $66,480." },
+  "South Dakota":     { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
+  "Tennessee":        { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "3–6 months",  probateCourtReq: true,  probateNotes: "Timeline depends on estate type and assets. Full process 6–12 months.",                                                 todDeed: "Not allowed" },
+  "Texas":            { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Court hearing to grant probate. Full process 6–12 months.",                                                            todDeed: "Allowed (also Lady Bird deed)" },
+  "Utah":             { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "~$1,304/mo", probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Court order required to close estate. Full process 6–12 months.",                                                       todDeed: "Allowed",                medicaidNotes: "Utah income limit is approximately 100% FPL." },
+  "Vermont":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Lady Bird deed only" },
+  "Virginia":         { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "5 months",    probateCourtReq: true,  probateNotes: "Estate settlement period before distribution. Full process 6–12 months.",                                               todDeed: "Allowed" },
+  "Washington":       { assetLimit: "$2,000",    csra: "$72,529–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed",                medicaidNotes: "Washington minimum CSRA is $72,529." },
+  "Washington D.C.":  { assetLimit: "$4,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.",                                                                                  todDeed: "Not confirmed — verify locally", medicaidNotes: "D.C. individual asset limit is $4,000." },
+  "West Virginia":    { assetLimit: "$2,000",    csra: "$32,532–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "6 months",    probateCourtReq: true,  probateNotes: "Full process typically 9–15 months.",                                                                                  todDeed: "Allowed (also Lady Bird deed)" },
+  "Wisconsin":        { assetLimit: "$2,000",    csra: "$50,000–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",    probateCourtReq: true,  probateNotes: "Formal probate hearing required. Full process 6–12 months.",                                                            todDeed: "Allowed",                medicaidNotes: "Wisconsin minimum CSRA is $50,000." },
+  "Wyoming":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months",  probateCourtReq: true,  probateNotes: "Full process typically 6–12 months.",                                                                                  todDeed: "Allowed" },
 };
 
 function buildRealPropertyContext(a: AssessmentAnswers, i: IntakeAnswers): string | null {
@@ -155,7 +162,12 @@ function buildRealPropertyContext(a: AssessmentAnswers, i: IntakeAnswers): strin
   }
 
   if (a.situation === "ongoing" || a.situation === "planning" || a.situation === "crisis") {
-    lines.push(`The primary residence is exempt from Medicaid asset calculations while the person resides there. However, Medicaid Estate Recovery (MERP) allows the state to place a claim on the property after the person's death to recoup Medicaid benefits paid — this is one of the most overlooked risks in elder care planning.`);
+    const isRental = i.propertyUse?.startsWith("Rental");
+    if (isRental) {
+      lines.push("The property is a rental or investment property — unlike a primary residence, it is a countable asset for Medicaid eligibility purposes. This means its value is included when calculating whether the person qualifies for Medicaid. An elder law attorney should review options for handling this asset.");
+    } else {
+      lines.push(`The primary residence is exempt from Medicaid asset calculations while the person resides there. However, Medicaid Estate Recovery (MERP) allows the state to place a claim on the property after the person's death to recoup Medicaid benefits paid — this is one of the most overlooked risks in elder care planning.`);
+    }
     if (i.todDeed === "Yes") {
       lines.push("A TOD or Lady Bird deed is in place. Depending on how it is structured, this may provide protection against MERP claims — confirm with an elder law attorney in " + state + ".");
     } else if (i.propertyTitle === "In a trust") {
@@ -238,6 +250,18 @@ function buildStateContext(a: AssessmentAnswers, i: IntakeAnswers): StateContext
     }
   }
 
+  const showPropertyTools = i.realEstate === "Yes" && showMedicaid;
+  let todDeedNote = "";
+  if (s.todDeed === "Allowed" || s.todDeed === "Allowed (also Lady Bird deed)") {
+    todDeedNote = `${i.state} allows a Transfer on Death deed — a simple, low-cost way to pass the property to a named beneficiary without probate and potentially outside MERP recovery. Consult a local attorney to confirm current requirements.`;
+  } else if (s.todDeed === "Lady Bird deed only") {
+    todDeedNote = `${i.state} does not have a standard TOD deed statute but does recognize the Lady Bird deed (enhanced life estate), which achieves a similar result — the owner retains full control during life and the property passes outside probate at death.`;
+  } else if (s.todDeed === "Not allowed") {
+    todDeedNote = `${i.state} does not currently allow Transfer on Death deeds or Lady Bird deeds. A revocable living trust is the primary alternative for passing real property outside probate and potentially protecting against MERP recovery.`;
+  } else {
+    todDeedNote = `TOD deed availability in ${i.state} is not confirmed — verify with a local attorney. A revocable living trust is a reliable alternative in any state.`;
+  }
+
   return {
     medicaid: showMedicaid ? {
       assetLimit: s.assetLimit,
@@ -251,6 +275,10 @@ function buildStateContext(a: AssessmentAnswers, i: IntakeAnswers): StateContext
       minWait: s.probateWait,
       courtRequired: s.probateCourtReq,
       notes: s.probateNotes,
+    } : undefined,
+    propertyTools: showPropertyTools ? {
+      todDeed: s.todDeed,
+      todDeedNote,
     } : undefined,
     disclaimer: `Reference data for ${i.state} (2026). These are general figures — your specific situation may differ based on asset types, marital status, prior transfers, and other factors. Confirm all figures with a licensed professional.`,
   };
@@ -582,7 +610,11 @@ function buildRedFlags(a: AssessmentAnswers, i: IntakeAnswers): string[] {
   }
 
   if (i.realEstate === "Yes" && (a.situation === "ongoing" || a.situation === "planning") && i.todDeed !== "Yes" && i.propertyTitle !== "In a trust") {
-    flags.push("Primary residence may be subject to Medicaid Estate Recovery (MERP) after death — the state can claim the home to recoup Medicaid benefits paid. No TOD deed or trust was confirmed. This is one of the most overlooked risks in elder care planning.");
+    if (i.propertyUse?.startsWith("Rental")) {
+      flags.push("Rental or investment property is a countable asset for Medicaid purposes — unlike a primary residence, it cannot be excluded from eligibility calculations. An elder law attorney should advise on how to handle this asset in a Medicaid planning context.");
+    } else {
+      flags.push("Primary residence may be subject to Medicaid Estate Recovery (MERP) after death — the state can claim the home to recoup Medicaid benefits paid. No TOD deed or trust was confirmed. This is one of the most overlooked risks in elder care planning.");
+    }
   }
 
   if (i.realEstate === "Yes" && a.situation === "loss" && i.propertyTitle === "Tenants in common") {
@@ -628,6 +660,8 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
       ...(intake.realEstate === "Yes" ? [
         { label: "Property titling", value: intake.propertyTitle || "Not specified" },
         { label: "TOD / Lady Bird deed", value: intake.todDeed || "Not specified" },
+        ...(intake.mortgageStatus ? [{ label: "Active mortgage", value: intake.mortgageStatus }] : []),
+        ...(intake.propertyUse ? [{ label: "Property use", value: intake.propertyUse }] : []),
       ] : []),
       { label: "Retirement / business interests", value: intake.retirement || "Not specified" },
       { label: "Veteran status", value: intake.veteran || "Not specified" },

@@ -159,6 +159,28 @@ const QUESTIONS: Question[] = [
   },
   {
     tier: 2, module: "Property & Finances", moduleNum: 2, totalModules: 3,
+    key: "mortgageStatus",
+    question: "Is there an active mortgage on the property?",
+    type: "radio",
+    options: ["Yes", "No", "Not sure"],
+    showIf: (a) => a.realEstate === "Yes",
+  },
+  {
+    tier: 2, module: "Property & Finances", moduleNum: 2, totalModules: 3,
+    key: "propertyUse",
+    question: "How is the property primarily used?",
+    type: "radio",
+    options: [
+      "Primary residence",
+      "Rental or investment property",
+      "Vacation or second home",
+      "Not sure",
+    ],
+    hint: "Primary residences are exempt from Medicaid asset calculations. Rental and investment properties are countable assets — an important distinction for Medicaid planning.",
+    showIf: (a) => a.realEstate === "Yes",
+  },
+  {
+    tier: 2, module: "Property & Finances", moduleNum: 2, totalModules: 3,
     key: "retirement",
     question: "Are there retirement accounts (IRA, 401k, pension) or business interests?",
     type: "radio",
@@ -200,6 +222,7 @@ const EMPTY_ANSWERS: IntakeAnswers = {
   state: "", age: "", living: "", dementia: "",
   adlLevel: "", healthCondition: "", medicareStatus: "",
   assets: "", realEstate: "", propertyTitle: "", todDeed: "",
+  mortgageStatus: "", propertyUse: "",
   retirement: "", veteran: "", ltcInsurance: "",
   legalDocs: "", poa: "", spouse: "", disputes: "", attorney: "",
 };

@@ -124,6 +124,21 @@ function StateContextPanel({ ctx }: { ctx: StateContext }) {
           <p className="text-xs text-muted-foreground leading-relaxed">{ctx.probate.notes}</p>
         </div>
       )}
+      {ctx.propertyTools && (
+        <div>
+          <p className="text-xs font-semibold tracking-wider text-accent uppercase mb-3">Property Planning Tools</p>
+          <div className="flex justify-between items-baseline border-b border-border pb-2 mb-3">
+            <span className="text-sm text-muted-foreground font-medium">Transfer on Death deed</span>
+            <span className={`text-sm font-semibold ${
+              ctx.propertyTools.todDeed.startsWith("Allowed") ? "text-green-700" :
+              ctx.propertyTools.todDeed === "Lady Bird deed only" ? "text-amber-700" :
+              ctx.propertyTools.todDeed === "Not allowed" ? "text-red-600" :
+              "text-muted-foreground"
+            }`}>{ctx.propertyTools.todDeed}</span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">{ctx.propertyTools.todDeedNote}</p>
+        </div>
+      )}
       <p className="text-xs text-muted-foreground border-t border-border pt-3 italic leading-relaxed">{ctx.disclaimer}</p>
     </div>
   );
