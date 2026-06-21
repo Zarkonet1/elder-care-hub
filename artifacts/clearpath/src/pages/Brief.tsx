@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin, Home } from "lucide-react";
 import { generateBrief, type Brief, type StateContext, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
 interface BriefSection {
@@ -259,6 +259,11 @@ export default function Brief() {
         </div>
       ),
     },
+    ...(brief.realPropertyContext ? [{
+      icon: <Home className="w-5 h-5 text-accent" />,
+      label: "Real Property",
+      content: <p className="text-foreground leading-relaxed">{brief.realPropertyContext}</p>,
+    }] : []),
     {
       icon: <Phone className="w-5 h-5 text-accent" />,
       label: "What's Already Been Done",

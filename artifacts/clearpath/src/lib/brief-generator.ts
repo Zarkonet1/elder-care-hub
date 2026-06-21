@@ -13,6 +13,8 @@ export interface IntakeAnswers {
   dementia: string;
   assets: string;
   realEstate: string;
+  propertyTitle: string;
+  todDeed: string;
   retirement: string;
   veteran: string;
   ltcInsurance: string;
@@ -51,6 +53,7 @@ export interface Brief {
   priorityActions: string[];
   professionalMatch: { type: string; reason: string };
   redFlags: string[];
+  realPropertyContext: string | null;
   stateContext: StateContext | null;
 }
 
@@ -123,6 +126,50 @@ const STATE_DATA: Record<string, StateInfo> = {
   "Wisconsin":        { assetLimit: "$2,000",    csra: "$50,000–$162,660",  incomeLimit: "$2,982/mo",  probateWait: "4 months",   probateCourtReq: true,  probateNotes: "Formal probate hearing required. Full process 6–12 months.", medicaidNotes: "Wisconsin minimum CSRA is $50,000." },
   "Wyoming":          { assetLimit: "$2,000",    csra: "$162,660",          incomeLimit: "$2,982/mo",  probateWait: "4–6 months", probateCourtReq: true,  probateNotes: "Full process typically 6–12 months." },
 };
+
+function buildRealPropertyContext(a: AssessmentAnswers, i: IntakeAnswers): string | null {
+  if (i.realEstate !== "Yes") return null;
+
+  const lines: string[] = [];
+  const state = i.state || "your state";
+
+  if (a.situation === "loss") {
+    if (i.todDeed === "Yes") {
+      lines.push("A Transfer on Death deed or Lady Bird deed was in place. The property passes directly to the named beneficiary without probate. The beneficiary should record an affidavit and provide a certified death certificate to the county recorder to complete the transfer.");
+    } else if (i.propertyTitle === "Joint tenancy with right of survivorship") {
+      lines.push("The property was held in joint tenancy with right of survivorship. Title passes automatically to the surviving owner — probate is not required for this asset. The surviving owner should file an Affidavit of Surviving Joint Tenant with the county recorder to formally memorialize the transfer.");
+    } else if (i.propertyTitle === "Tenants in common") {
+      lines.push("The property was held as tenants in common. The deceased's share does NOT automatically pass to the surviving co-owner — it must go through probate. The deceased's share will be distributed according to the will, or by intestate succession laws if no will exists.");
+    } else if (i.propertyTitle === "One person's name only") {
+      lines.push("The property was titled in one person's name only. Probate is required to transfer the real estate to heirs. Without a trust or TOD deed in place, the court must authorize the transfer.");
+    } else if (i.propertyTitle === "In a trust") {
+      lines.push("The property is held in a trust. The trustee handles the transfer per the trust terms — probate is not required for this asset. The trustee should work with a real estate attorney to record the transfer to the beneficiary.");
+    } else {
+      lines.push(`How the property is titled determines whether probate is required. Confirm the exact form of ownership with the county recorder or a title company in ${state} before assuming the transfer path.`);
+    }
+    lines.push("Note: a deed does not change when a mortgage is paid off. The mortgage satisfaction is a separate recorded document that removes the lien — the original deed remains the operative ownership instrument.");
+  }
+
+  if (a.situation === "ongoing" || a.situation === "planning" || a.situation === "crisis") {
+    lines.push(`The primary residence is exempt from Medicaid asset calculations while the person resides there. However, Medicaid Estate Recovery (MERP) allows the state to place a claim on the property after the person's death to recoup Medicaid benefits paid — this is one of the most overlooked risks in elder care planning.`);
+    if (i.todDeed === "Yes") {
+      lines.push("A TOD or Lady Bird deed is in place. Depending on how it is structured, this may provide protection against MERP claims — confirm with an elder law attorney in " + state + ".");
+    } else if (i.propertyTitle === "In a trust") {
+      lines.push("The property is held in a trust, which may provide MERP protection depending on the trust type. An irrevocable trust generally offers stronger protection than a revocable one — confirm with an elder law attorney.");
+    } else {
+      lines.push(`Without a Transfer on Death deed, Lady Bird deed, or irrevocable trust, the home may be exposed to MERP recovery after the person's death. An elder law attorney can advise on protective strategies available in ${state}.`);
+    }
+  }
+
+  if (a.situation === "self") {
+    lines.push("Your primary residence is generally exempt from Medicaid asset counts while you reside there. However, Medicaid Estate Recovery (MERP) can claim the property after your death to recover benefits paid. Protective strategies include a Transfer on Death deed (where available in your state), a Lady Bird deed, or placing the home in an irrevocable trust before applying for Medicaid.");
+    if (i.todDeed !== "Yes") {
+      lines.push(`No TOD or Lady Bird deed was confirmed. This is worth reviewing with an elder law attorney — it is often one of the simplest and lowest-cost planning steps available.`);
+    }
+  }
+
+  return lines.join(" ");
+}
 
 function buildStateContext(a: AssessmentAnswers, i: IntakeAnswers): StateContext | null {
   if (!i.state || !STATE_DATA[i.state]) return null;
@@ -463,6 +510,14 @@ function buildRedFlags(a: AssessmentAnswers, i: IntakeAnswers): string[] {
     flags.push("No will or trust was confirmed — intestate succession laws will govern how assets are distributed, which may not align with the deceased's wishes.");
   }
 
+  if (i.realEstate === "Yes" && (a.situation === "ongoing" || a.situation === "planning") && i.todDeed !== "Yes" && i.propertyTitle !== "In a trust") {
+    flags.push("Primary residence may be subject to Medicaid Estate Recovery (MERP) after death — the state can claim the home to recoup Medicaid benefits paid. No TOD deed or trust was confirmed. This is one of the most overlooked risks in elder care planning.");
+  }
+
+  if (i.realEstate === "Yes" && a.situation === "loss" && i.propertyTitle === "Tenants in common") {
+    flags.push("Property held as tenants in common does NOT automatically transfer to the surviving co-owner. The deceased's share requires probate — it does not pass like joint tenancy.");
+  }
+
   return flags;
 }
 
@@ -478,6 +533,10 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
       { label: "Cognitive decline", value: intake.dementia || "Not specified" },
       { label: "Estimated assets", value: intake.assets || "Not specified" },
       { label: "Real estate involved", value: intake.realEstate || "Not specified" },
+      ...(intake.realEstate === "Yes" ? [
+        { label: "Property titling", value: intake.propertyTitle || "Not specified" },
+        { label: "TOD / Lady Bird deed", value: intake.todDeed || "Not specified" },
+      ] : []),
       { label: "Retirement / business interests", value: intake.retirement || "Not specified" },
       { label: "Veteran status", value: intake.veteran || "Not specified" },
       { label: "Long-term care insurance", value: intake.ltcInsurance || "Not specified" },
@@ -491,6 +550,7 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
     priorityActions: buildPriorityActions(assessment, intake),
     professionalMatch: buildProfessionalMatch(assessment, intake),
     redFlags: buildRedFlags(assessment, intake),
+    realPropertyContext: buildRealPropertyContext(assessment, intake),
     stateContext: buildStateContext(assessment, intake),
   };
 }

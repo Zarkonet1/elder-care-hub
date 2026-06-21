@@ -27,6 +27,7 @@ interface Question {
   type: "radio" | "dropdown";
   options?: string[];
   hint?: string;
+  showIf?: (answers: IntakeAnswers) => boolean;
 }
 
 const QUESTIONS: Question[] = [
@@ -89,6 +90,34 @@ const QUESTIONS: Question[] = [
     question: "Is there a home or other real estate involved?",
     type: "radio",
     options: ["Yes", "No", "Not sure"],
+  },
+  {
+    module: "Financial picture",
+    moduleNum: 3,
+    totalModules: 6,
+    key: "propertyTitle",
+    question: "How is the real estate titled?",
+    type: "radio",
+    options: [
+      "Joint tenancy with right of survivorship",
+      "Tenants in common",
+      "One person's name only",
+      "In a trust",
+      "Not sure",
+    ],
+    hint: "How a property is titled determines what happens to it at death — whether probate is required, and whether it passes automatically to a surviving owner.",
+    showIf: (a) => a.realEstate === "Yes",
+  },
+  {
+    module: "Financial picture",
+    moduleNum: 3,
+    totalModules: 6,
+    key: "todDeed",
+    question: "Is there a Transfer on Death deed or Lady Bird deed on the property?",
+    type: "radio",
+    options: ["Yes", "No", "Not sure"],
+    hint: "A Transfer on Death (TOD) or Lady Bird deed names a beneficiary who receives the property at death — without probate. Not all states allow them.",
+    showIf: (a) => a.realEstate === "Yes",
   },
   {
     module: "Financial picture",
@@ -170,10 +199,42 @@ const TOTAL = QUESTIONS.length;
 
 const EMPTY_ANSWERS: IntakeAnswers = {
   state: "", age: "", living: "", dementia: "",
-  assets: "", realEstate: "", retirement: "",
-  veteran: "", ltcInsurance: "",
+  assets: "", realEstate: "", propertyTitle: "", todDeed: "",
+  retirement: "", veteran: "", ltcInsurance: "",
   legalDocs: "", poa: "", spouse: "", disputes: "", attorney: "",
 };
+
+// Returns true if a question should be skipped given current answers
+function shouldSkip(index: number, answers: IntakeAnswers): boolean {
+  const q = QUESTIONS[index];
+  if (q.showIf && !q.showIf(answers)) return true;
+  return false;
+}
+
+function getNextStep(current: number, answers: IntakeAnswers): number {
+  let next = current + 1;
+  while (next < TOTAL && shouldSkip(next, answers)) next++;
+  return next;
+}
+
+function getPrevStep(current: number, answers: IntakeAnswers): number {
+  let prev = current - 1;
+  while (prev >= 0 && shouldSkip(prev, answers)) prev--;
+  return prev;
+}
+
+// Count of visible questions for progress display
+function visibleCount(answers: IntakeAnswers): number {
+  return QUESTIONS.filter((_, i) => !shouldSkip(i, answers)).length;
+}
+
+function visibleIndex(step: number, answers: IntakeAnswers): number {
+  let count = 0;
+  for (let i = 0; i <= step; i++) {
+    if (!shouldSkip(i, answers)) count++;
+  }
+  return count;
+}
 
 export default function Intake() {
   const [, navigate] = useLocation();
@@ -195,14 +256,18 @@ export default function Intake() {
   const q = QUESTIONS[step];
   const currentValue = answers[q.key];
   const isValid = currentValue !== "";
+  const totalVisible = visibleCount(answers);
+  const currentVisible = visibleIndex(step, answers);
+  const progressPct = (currentVisible / totalVisible) * 100;
 
   const handleSelect = (value: string) => {
     setAnswers((prev) => ({ ...prev, [q.key]: value }));
   };
 
   const handleNext = () => {
-    if (step < TOTAL - 1) {
-      setStep((s) => s + 1);
+    const next = getNextStep(step, answers);
+    if (next < TOTAL) {
+      setStep(next);
     } else {
       localStorage.setItem("clearpath_intake", JSON.stringify(answers));
       navigate("/brief");
@@ -213,9 +278,11 @@ export default function Intake() {
     if (step === 0) {
       navigate("/start");
     } else {
-      setStep((s) => s - 1);
+      setStep(getPrevStep(step, answers));
     }
   };
+
+  const isLastVisible = getNextStep(step, answers) >= TOTAL;
 
   if (noAssessment) {
     return (
@@ -236,8 +303,6 @@ export default function Intake() {
     );
   }
 
-  const progressPct = ((step + 1) / TOTAL) * 100;
-
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
@@ -253,7 +318,7 @@ export default function Intake() {
         <div className="mb-8">
           <div className="flex justify-between items-baseline mb-2">
             <span className="text-sm text-primary font-medium">
-              Question {step + 1} of {TOTAL}
+              Question {currentVisible} of {totalVisible}
             </span>
             <span className="text-sm text-muted-foreground font-medium">{q.question.slice(0, 30)}...</span>
           </div>
@@ -335,7 +400,7 @@ export default function Intake() {
             >
               <ChevronLeft className="w-3.5 h-3.5" /> Back
             </button>
-            {step < TOTAL - 1 ? (
+            {!isLastVisible ? (
               <Button
                 onClick={handleNext}
                 disabled={!isValid}
