@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin, Home, HeartPulse } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin, Home, HeartPulse, PlusCircle } from "lucide-react";
 import { generateBrief, type Brief, type StateContext, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
 interface BriefSection {
@@ -156,6 +156,7 @@ export default function Brief() {
   const [brief, setBrief] = useState<Brief | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
+  const [hasDepthAnswers, setHasDepthAnswers] = useState(false);
 
   useEffect(() => {
     document.title = "Your Situation Summary | ClearPath Elder Guide";
@@ -174,6 +175,9 @@ export default function Brief() {
       const intake: IntakeAnswers = JSON.parse(rawIntake);
       const generated = generateBrief(assessment, intake);
       setBrief(generated);
+      // Check if any tier 2 depth fields are filled
+      const depth = intake.dementia || intake.adlLevel || intake.veteran || intake.spouse;
+      setHasDepthAnswers(!!depth);
 
       // Fire-and-forget: email the brief silently
       fetch("/api/send-brief", {
@@ -314,6 +318,28 @@ export default function Brief() {
               </div>
             </div>
           ))}
+
+          {!hasDepthAnswers && (
+            <div className="bg-primary/5 border border-primary/20 rounded-2xl px-7 py-6 mt-4">
+              <div className="flex items-start gap-4">
+                <PlusCircle className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="font-serif text-lg font-semibold text-secondary mb-1">Want a more complete picture?</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    Answer 8–11 more questions about health, property details, and family context. Your brief will update automatically — takes about 2 minutes.
+                  </p>
+                  <Button
+                    onClick={() => navigate("/intake/refine")}
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-primary/5"
+                  >
+                    Add more detail
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="bg-card border border-border rounded-2xl shadow-sm px-7 py-8 mt-4">
             <p className="text-sm text-muted-foreground italic mb-6 leading-relaxed text-center max-w-lg mx-auto">

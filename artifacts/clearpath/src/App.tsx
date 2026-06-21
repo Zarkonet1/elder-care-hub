@@ -32,6 +32,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/checklist" component={Checklist} />
       <Route path="/intake" component={Intake} />
+      <Route path="/intake/refine">{() => <Intake mode="refine" />}</Route>
       <Route path="/brief" component={Brief} />
       <Route component={NotFound} />
     </Switch>
