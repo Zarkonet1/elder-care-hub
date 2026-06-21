@@ -11,6 +11,9 @@ export interface IntakeAnswers {
   age: string;
   living: string;
   dementia: string;
+  adlLevel: string;
+  healthCondition: string;
+  medicareStatus: string;
   assets: string;
   realEstate: string;
   propertyTitle: string;
@@ -53,6 +56,7 @@ export interface Brief {
   priorityActions: string[];
   professionalMatch: { type: string; reason: string };
   redFlags: string[];
+  healthContext: string | null;
   realPropertyContext: string | null;
   stateContext: StateContext | null;
 }
@@ -169,6 +173,51 @@ function buildRealPropertyContext(a: AssessmentAnswers, i: IntakeAnswers): strin
   }
 
   return lines.join(" ");
+}
+
+function buildHealthContext(a: AssessmentAnswers, i: IntakeAnswers): string | null {
+  if (a.situation === "loss") return null;
+  if (!i.adlLevel && !i.healthCondition && !i.medicareStatus) return null;
+
+  const lines: string[] = [];
+
+  if (i.adlLevel && !i.adlLevel.startsWith("Not sure")) {
+    if (i.adlLevel.startsWith("Fully dependent")) {
+      lines.push("The person requires full-time care assistance for all daily activities — a care level consistent with skilled nursing or memory care facility placement, or intensive in-home care.");
+    } else if (i.adlLevel.startsWith("Significant assistance")) {
+      lines.push("The person requires significant daily assistance with most activities of daily living. This care level typically requires a home health aide, assisted living, or similar structured support.");
+    } else if (i.adlLevel.startsWith("Some assistance")) {
+      lines.push("The person needs some assistance with daily tasks such as bathing, dressing, or meal preparation — often manageable with family support or part-time home care.");
+    } else if (i.adlLevel.startsWith("Independent")) {
+      lines.push("The person is currently managing most daily tasks independently. Care planning should focus on anticipating future needs rather than addressing immediate gaps.");
+    }
+  }
+
+  if (i.healthCondition && !i.healthCondition.startsWith("Not sure") && !i.healthCondition.startsWith("No significant")) {
+    if (i.healthCondition.startsWith("Neurological")) {
+      lines.push("A neurological condition (Parkinson's, ALS, MS, or stroke) typically involves progressive decline in mobility and independence — care planning should account for increasing needs over time.");
+    } else if (i.healthCondition.startsWith("Cancer")) {
+      lines.push("Active cancer or ongoing treatment affects care needs significantly and may involve transitions between acute care, rehabilitation, and hospice. An oncology-aware care coordinator can help navigate these transitions.");
+    } else if (i.healthCondition.startsWith("Heart")) {
+      lines.push("Cardiovascular conditions can result in rapid acute episodes (hospitalizations, rehab stays) alongside chronic care needs. Medicare Part A skilled nursing coverage is particularly relevant here.");
+    } else if (i.healthCondition.startsWith("Multiple")) {
+      lines.push("Multiple chronic conditions typically increase care complexity and coordination demands. A geriatric care manager or primary care team experienced with multimorbidity is especially valuable.");
+    } else if (i.healthCondition.startsWith("Primarily mobility")) {
+      lines.push("Mobility and fall risk are among the leading drivers of nursing home placement. Fall prevention programs, home modifications, and physical therapy are often covered by Medicare Part B.");
+    }
+  }
+
+  if (i.medicareStatus) {
+    if (i.medicareStatus.startsWith("Yes")) {
+      lines.push("Medicare is active. It covers skilled nursing and rehabilitation after a qualifying 3-day hospital stay (up to 100 days), home health services when homebound, and hospice — but does not cover long-term custodial care, which constitutes the majority of elder care costs.");
+    } else if (i.medicareStatus.startsWith("Not yet")) {
+      lines.push("Medicare enrollment has not yet occurred. If the person is approaching 65, enrollment timing matters — late enrollment in Part B carries permanent premium penalties. A Medicare counselor or SHIP advisor can clarify enrollment windows and options.");
+    } else if (i.medicareStatus === "No") {
+      lines.push("The person is not currently enrolled in Medicare. If under 65, other coverage should be confirmed. If approaching eligibility, enrollment planning should begin promptly to avoid late penalties.");
+    }
+  }
+
+  return lines.length > 0 ? lines.join(" ") : null;
 }
 
 function buildStateContext(a: AssessmentAnswers, i: IntakeAnswers): StateContext | null {
@@ -434,7 +483,11 @@ function buildProfessionalMatch(a: AssessmentAnswers, i: IntakeAnswers): { type:
   const noLegalDocs = i.poa === "Neither exists" || i.legalDocs === "Neither";
   const hasDementia = i.dementia === "Yes";
   const highAssets = i.assets === "$500,000 – $1,000,000" || i.assets === "Over $1,000,000";
+  const highCareNeeds = i.adlLevel?.startsWith("Fully dependent") || i.adlLevel?.startsWith("Significant assistance");
+  const hasNeurological = i.healthCondition?.startsWith("Neurological");
+  const hasCancer = i.healthCondition?.startsWith("Cancer");
   const vetNote = isVeteran ? " A Veterans benefits counselor should also be engaged to maximize VA Aid & Attendance benefits, which can significantly offset care costs." : "";
+  const careNote = (highCareNeeds && !hasDementia) ? " Given the current care level, a geriatric care manager should also be engaged to assess care settings and coordinate support." : "";
 
   switch (a.situation) {
     case "loss":
@@ -447,7 +500,19 @@ function buildProfessionalMatch(a: AssessmentAnswers, i: IntakeAnswers): { type:
       if (noLegalDocs || hasDementia) {
         return {
           type: isVeteran ? "Elder Law Attorney + Veterans Benefits Counselor" : "Elder Law Attorney",
-          reason: `An elder law attorney should be the first call. The combination of an urgent situation${hasDementia ? ", cognitive decline," : ""} and missing legal documents requires immediate legal intervention — establishing or challenging POA, exploring guardianship, and navigating Medicare coverage.${vetNote}`,
+          reason: `An elder law attorney should be the first call. The combination of an urgent situation${hasDementia ? ", cognitive decline," : ""} and missing legal documents requires immediate legal intervention — establishing or challenging POA, exploring guardianship, and navigating Medicare coverage.${vetNote}${careNote}`,
+        };
+      }
+      if (hasCancer) {
+        return {
+          type: isVeteran ? "Oncology Social Worker + Veterans Benefits Counselor" : "Oncology Social Worker",
+          reason: `An oncology social worker specializes in navigating the care, financial, and emotional challenges of active cancer treatment — coordinating between oncology teams, identifying financial assistance programs, and planning for transitions in care.${vetNote}`,
+        };
+      }
+      if (highCareNeeds || hasNeurological) {
+        return {
+          type: isVeteran ? "Geriatric Care Manager + Veterans Benefits Counselor" : "Geriatric Care Manager",
+          reason: `A geriatric care manager specializes in navigating acute eldercare situations — evaluating care needs, coordinating with providers, and identifying the right level of care quickly${hasNeurological ? ", including specialists in neurological care settings" : ""}. They can often act within 24–48 hours.${vetNote}`,
         };
       }
       return {
@@ -459,7 +524,13 @@ function buildProfessionalMatch(a: AssessmentAnswers, i: IntakeAnswers): { type:
       if (highAssets || hasDementia) {
         return {
           type: isVeteran ? "Elder Law Attorney + Veterans Benefits Counselor" : "Elder Law Attorney",
-          reason: `An elder law attorney is essential for Medicaid planning${hasDementia ? " and establishing legal authority given cognitive decline" : ""}. Without proactive planning, high assets can erode quickly once care costs begin.${vetNote}`,
+          reason: `An elder law attorney is essential for Medicaid planning${hasDementia ? " and establishing legal authority given cognitive decline" : ""}. Without proactive planning, high assets can erode quickly once care costs begin.${vetNote}${careNote}`,
+        };
+      }
+      if (hasCancer) {
+        return {
+          type: isVeteran ? "Oncology Social Worker + Veterans Benefits Counselor" : "Oncology Social Worker",
+          reason: `An oncology social worker can coordinate between the medical team, family, and community resources — helping manage the practical and financial dimensions of ongoing cancer care.${vetNote}`,
         };
       }
       return {
@@ -518,6 +589,24 @@ function buildRedFlags(a: AssessmentAnswers, i: IntakeAnswers): string[] {
     flags.push("Property held as tenants in common does NOT automatically transfer to the surviving co-owner. The deceased's share requires probate — it does not pass like joint tenancy.");
   }
 
+  const fullyDependent = i.adlLevel?.startsWith("Fully dependent") || i.adlLevel?.startsWith("Significant assistance");
+  if (fullyDependent && i.poa !== "Yes, both are in place" && (a.situation === "ongoing" || a.situation === "crisis")) {
+    if (i.dementia !== "Yes") {
+      // dementia case already flagged above; this catches high ADL need without dementia
+      flags.push("The person requires significant or full-time daily assistance but no confirmed Power of Attorney or Healthcare Proxy exists. Legal documents must be in place before a health crisis makes them impossible to execute.");
+    }
+  }
+
+  if (i.medicareStatus === "Not yet enrolled (under 65 or not yet applied)" && (a.situation === "ongoing" || a.situation === "crisis")) {
+    flags.push("Medicare enrollment has not occurred. If care is being provided without coverage in place, costs may be entirely out-of-pocket. Enrollment timing and options should be reviewed immediately.");
+  }
+
+  if (i.healthCondition?.startsWith("Cancer") && a.situation === "ongoing") {
+    if (i.poa !== "Yes, both are in place") {
+      flags.push("Active cancer with no confirmed Healthcare Proxy — decisions about treatment, hospitalization, and end-of-life care require this document. It should be prioritized immediately.");
+    }
+  }
+
   return flags;
 }
 
@@ -531,6 +620,9 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
       { label: "Age range", value: intake.age || "Not specified" },
       { label: "Current setting", value: intake.living || "Not specified" },
       { label: "Cognitive decline", value: intake.dementia || "Not specified" },
+      ...(intake.adlLevel ? [{ label: "Daily assistance level", value: intake.adlLevel.split(" —")[0] }] : []),
+      ...(intake.healthCondition ? [{ label: "Primary health condition", value: intake.healthCondition.split(" (")[0] }] : []),
+      ...(intake.medicareStatus ? [{ label: "Medicare status", value: intake.medicareStatus.split(",")[0] }] : []),
       { label: "Estimated assets", value: intake.assets || "Not specified" },
       { label: "Real estate involved", value: intake.realEstate || "Not specified" },
       ...(intake.realEstate === "Yes" ? [
@@ -550,6 +642,7 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
     priorityActions: buildPriorityActions(assessment, intake),
     professionalMatch: buildProfessionalMatch(assessment, intake),
     redFlags: buildRedFlags(assessment, intake),
+    healthContext: buildHealthContext(assessment, intake),
     realPropertyContext: buildRealPropertyContext(assessment, intake),
     stateContext: buildStateContext(assessment, intake),
   };

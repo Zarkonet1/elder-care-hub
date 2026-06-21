@@ -27,10 +27,11 @@ interface Question {
   type: "radio" | "dropdown";
   options?: string[];
   hint?: string;
-  showIf?: (answers: IntakeAnswers) => boolean;
+  showIf?: (answers: IntakeAnswers, situation: string) => boolean;
 }
 
 const QUESTIONS: Question[] = [
+  // Module 1 — Location
   {
     module: "Location",
     moduleNum: 1,
@@ -39,6 +40,7 @@ const QUESTIONS: Question[] = [
     question: "What state are you in?",
     type: "dropdown",
   },
+  // Module 2 — About the person
   {
     module: "About the person",
     moduleNum: 2,
@@ -73,6 +75,59 @@ const QUESTIONS: Question[] = [
     type: "radio",
     options: ["Yes", "No", "Not sure"],
   },
+  {
+    module: "About the person",
+    moduleNum: 2,
+    totalModules: 6,
+    key: "adlLevel",
+    question: "What level of daily assistance does the person currently need?",
+    type: "radio",
+    options: [
+      "Independent — manages most daily tasks without help",
+      "Some assistance — help needed with bathing, dressing, or meals",
+      "Significant assistance — requires help with most daily activities",
+      "Fully dependent — relies on others for all daily care",
+      "Not sure",
+    ],
+    hint: "ADL (Activities of Daily Living) level is one of the most important factors in determining appropriate care settings and costs.",
+    showIf: (_, situation) => situation !== "loss",
+  },
+  {
+    module: "About the person",
+    moduleNum: 2,
+    totalModules: 6,
+    key: "healthCondition",
+    question: "What best describes the primary health condition?",
+    type: "radio",
+    options: [
+      "Heart or cardiovascular condition",
+      "Cancer (active or in treatment)",
+      "Neurological condition (Parkinson's, ALS, MS, or stroke)",
+      "Primarily mobility or fall risk",
+      "Multiple chronic conditions",
+      "No significant health conditions identified",
+      "Not sure",
+    ],
+    hint: "This helps match the family with a professional who has relevant experience with the specific care challenges involved.",
+    showIf: (_, situation) => situation !== "loss",
+  },
+  {
+    module: "About the person",
+    moduleNum: 2,
+    totalModules: 6,
+    key: "medicareStatus",
+    question: "Is the person currently enrolled in Medicare?",
+    type: "radio",
+    options: [
+      "Yes, currently enrolled in Medicare",
+      "Not yet enrolled (under 65 or not yet applied)",
+      "No",
+      "Not sure",
+    ],
+    hint: "Medicare covers skilled nursing and rehabilitation after a qualifying hospital stay — but does not cover long-term custodial care. Knowing enrollment status helps frame what's covered vs. out-of-pocket.",
+    showIf: (_, situation) => situation !== "loss",
+  },
+  // Module 3 — Financial picture
   {
     module: "Financial picture",
     moduleNum: 3,
@@ -148,6 +203,7 @@ const QUESTIONS: Question[] = [
     options: ["Yes", "No", "Not sure"],
     hint: "Long-term care insurance can significantly change the funding picture for home care, assisted living, or memory care.",
   },
+  // Module 4 — Legal documents
   {
     module: "Legal documents",
     moduleNum: 4,
@@ -166,6 +222,7 @@ const QUESTIONS: Question[] = [
     type: "radio",
     options: ["Yes, both are in place", "One exists but not the other", "Neither exists", "Not sure"],
   },
+  // Module 5 — Family
   {
     module: "Family",
     moduleNum: 5,
@@ -184,6 +241,7 @@ const QUESTIONS: Question[] = [
     type: "radio",
     options: ["Yes", "No", "Possibly"],
   },
+  // Module 6 — What's been done
   {
     module: "What's been done",
     moduleNum: 6,
@@ -199,39 +257,38 @@ const TOTAL = QUESTIONS.length;
 
 const EMPTY_ANSWERS: IntakeAnswers = {
   state: "", age: "", living: "", dementia: "",
+  adlLevel: "", healthCondition: "", medicareStatus: "",
   assets: "", realEstate: "", propertyTitle: "", todDeed: "",
   retirement: "", veteran: "", ltcInsurance: "",
   legalDocs: "", poa: "", spouse: "", disputes: "", attorney: "",
 };
 
-// Returns true if a question should be skipped given current answers
-function shouldSkip(index: number, answers: IntakeAnswers): boolean {
+function shouldSkip(index: number, answers: IntakeAnswers, situation: string): boolean {
   const q = QUESTIONS[index];
-  if (q.showIf && !q.showIf(answers)) return true;
+  if (q.showIf && !q.showIf(answers, situation)) return true;
   return false;
 }
 
-function getNextStep(current: number, answers: IntakeAnswers): number {
+function getNextStep(current: number, answers: IntakeAnswers, situation: string): number {
   let next = current + 1;
-  while (next < TOTAL && shouldSkip(next, answers)) next++;
+  while (next < TOTAL && shouldSkip(next, answers, situation)) next++;
   return next;
 }
 
-function getPrevStep(current: number, answers: IntakeAnswers): number {
+function getPrevStep(current: number, answers: IntakeAnswers, situation: string): number {
   let prev = current - 1;
-  while (prev >= 0 && shouldSkip(prev, answers)) prev--;
+  while (prev >= 0 && shouldSkip(prev, answers, situation)) prev--;
   return prev;
 }
 
-// Count of visible questions for progress display
-function visibleCount(answers: IntakeAnswers): number {
-  return QUESTIONS.filter((_, i) => !shouldSkip(i, answers)).length;
+function visibleCount(answers: IntakeAnswers, situation: string): number {
+  return QUESTIONS.filter((_, i) => !shouldSkip(i, answers, situation)).length;
 }
 
-function visibleIndex(step: number, answers: IntakeAnswers): number {
+function visibleIndex(step: number, answers: IntakeAnswers, situation: string): number {
   let count = 0;
   for (let i = 0; i <= step; i++) {
-    if (!shouldSkip(i, answers)) count++;
+    if (!shouldSkip(i, answers, situation)) count++;
   }
   return count;
 }
@@ -241,12 +298,20 @@ export default function Intake() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<IntakeAnswers>(EMPTY_ANSWERS);
   const [noAssessment, setNoAssessment] = useState(false);
+  const [situation, setSituation] = useState("");
 
   useEffect(() => {
     document.title = "Get Matched with a Professional | ClearPath Elder Guide";
     window.scrollTo(0, 0);
     const saved = localStorage.getItem("clearpath_assessment");
-    if (!saved) setNoAssessment(true);
+    if (!saved) {
+      setNoAssessment(true);
+    } else {
+      try {
+        const assessment = JSON.parse(saved);
+        setSituation(assessment.situation || "");
+      } catch {}
+    }
   }, []);
 
   useEffect(() => {
@@ -256,16 +321,17 @@ export default function Intake() {
   const q = QUESTIONS[step];
   const currentValue = answers[q.key];
   const isValid = currentValue !== "";
-  const totalVisible = visibleCount(answers);
-  const currentVisible = visibleIndex(step, answers);
+  const totalVisible = visibleCount(answers, situation);
+  const currentVisible = visibleIndex(step, answers, situation);
   const progressPct = (currentVisible / totalVisible) * 100;
+  const isLastVisible = getNextStep(step, answers, situation) >= TOTAL;
 
   const handleSelect = (value: string) => {
     setAnswers((prev) => ({ ...prev, [q.key]: value }));
   };
 
   const handleNext = () => {
-    const next = getNextStep(step, answers);
+    const next = getNextStep(step, answers, situation);
     if (next < TOTAL) {
       setStep(next);
     } else {
@@ -278,11 +344,9 @@ export default function Intake() {
     if (step === 0) {
       navigate("/start");
     } else {
-      setStep(getPrevStep(step, answers));
+      setStep(getPrevStep(step, answers, situation));
     }
   };
-
-  const isLastVisible = getNextStep(step, answers) >= TOTAL;
 
   if (noAssessment) {
     return (

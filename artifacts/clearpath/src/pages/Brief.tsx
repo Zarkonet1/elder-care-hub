@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin, Home } from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin, Home, HeartPulse } from "lucide-react";
 import { generateBrief, type Brief, type StateContext, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
 interface BriefSection {
@@ -259,6 +259,11 @@ export default function Brief() {
         </div>
       ),
     },
+    ...(brief.healthContext ? [{
+      icon: <HeartPulse className="w-5 h-5 text-accent" />,
+      label: "Health & Care Context",
+      content: <p className="text-foreground leading-relaxed">{brief.healthContext}</p>,
+    }] : []),
     ...(brief.realPropertyContext ? [{
       icon: <Home className="w-5 h-5 text-accent" />,
       label: "Real Property",
