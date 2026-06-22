@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb,
   ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck,
-  MapPin, Home, HeartPulse, PlusCircle,
+  MapPin, Home, HeartPulse, PlusCircle, Link2, Check,
 } from "lucide-react";
 import { generateBrief, type Brief, type StateContext, type ExecutorTask, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
@@ -364,21 +364,86 @@ function getSectionLabel(key: string, situation: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// UUID + storage helpers
+// ---------------------------------------------------------------------------
+
+const BRIEF_TTL_MS = 90 * 24 * 60 * 60 * 1000; // 90 days
+
+function generateUUID(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
+function saveBrief(uuid: string, assessment: AssessmentAnswers, intake: IntakeAnswers) {
+  const payload = {
+    assessment,
+    intake,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + BRIEF_TTL_MS,
+  };
+  try {
+    localStorage.setItem(`clearpath_brief_${uuid}`, JSON.stringify(payload));
+  } catch {
+    // localStorage quota exceeded — graceful no-op
+  }
+}
+
+function loadBrief(uuid: string): { assessment: AssessmentAnswers; intake: IntakeAnswers } | null {
+  try {
+    const raw = localStorage.getItem(`clearpath_brief_${uuid}`);
+    if (!raw) return null;
+    const payload = JSON.parse(raw);
+    if (payload.expiresAt && Date.now() > payload.expiresAt) {
+      localStorage.removeItem(`clearpath_brief_${uuid}`);
+      return null;
+    }
+    return { assessment: payload.assessment, intake: payload.intake };
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
 
-export default function BriefPage() {
+interface BriefPageProps {
+  id?: string;
+}
+
+export default function BriefPage({ id }: BriefPageProps) {
   const [, navigate] = useLocation();
   const [brief, setBrief] = useState<Brief | null>(null);
   const [situation, setSituation] = useState("default");
+  const [briefId, setBriefId] = useState<string | null>(id ?? null);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
+  const [expired, setExpired] = useState(false);
   const [hasDepthAnswers, setHasDepthAnswers] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     document.title = "Your Situation Summary | ClearPath Elder Guide";
     window.scrollTo(0, 0);
 
+    // ── Loading an existing brief by UUID ──────────────────────────────────
+    if (id) {
+      const saved = loadBrief(id);
+      if (!saved) {
+        setExpired(true);
+        return;
+      }
+      const generated = generateBrief(saved.assessment, saved.intake);
+      setBrief(generated);
+      setSituation(saved.assessment.situation || "default");
+      const depth = saved.intake.dementia || saved.intake.adlLevel || saved.intake.veteran || saved.intake.spouse;
+      setHasDepthAnswers(!!depth);
+      return;
+    }
+
+    // ── Generating a new brief ─────────────────────────────────────────────
     const rawAssessment = localStorage.getItem("clearpath_assessment");
     const rawIntake = localStorage.getItem("clearpath_intake");
 
@@ -397,6 +462,12 @@ export default function BriefPage() {
       const depth = intake.dementia || intake.adlLevel || intake.veteran || intake.spouse;
       setHasDepthAnswers(!!depth);
 
+      // Save and navigate to UUID URL
+      const uuid = generateUUID();
+      saveBrief(uuid, assessment, intake);
+      setBriefId(uuid);
+      navigate(`/brief/${uuid}`, { replace: true });
+
       fetch("/api/send-brief", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -405,7 +476,31 @@ export default function BriefPage() {
     } catch {
       setError(true);
     }
-  }, []);
+  }, [id]);
+
+  const handleCopyLink = () => {
+    const url = `${window.location.origin}/brief/${briefId}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+
+  if (expired) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <h1 className="font-serif text-2xl font-bold text-secondary mb-4">This brief has expired</h1>
+          <p className="text-muted-foreground mb-6">
+            Briefs are saved for 90 days on the device where they were created. This one is no longer available — but you can generate a new one in just a few minutes.
+          </p>
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => navigate("/start")}>
+            Create a New Brief
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -533,7 +628,25 @@ export default function BriefPage() {
           </div>
           <p className="text-xs font-semibold tracking-widest text-primary uppercase mb-3">{config.badge}</p>
           <h1 className="font-serif text-3xl md:text-4xl font-bold text-secondary mb-3">{config.title}</h1>
-          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">{config.subtitle}</p>
+          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed mb-5">{config.subtitle}</p>
+          {briefId && (
+            <button
+              onClick={handleCopyLink}
+              className="inline-flex items-center gap-2 text-sm border border-border rounded-xl px-4 py-2 text-muted-foreground hover:text-secondary hover:border-secondary/40 transition-colors bg-card"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 text-accent" />
+                  Link copied
+                </>
+              ) : (
+                <>
+                  <Link2 className="w-4 h-4" />
+                  Copy shareable link
+                </>
+              )}
+            </button>
+          )}
         </div>
 
         <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">

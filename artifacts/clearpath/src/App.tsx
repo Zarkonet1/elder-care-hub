@@ -33,6 +33,7 @@ function Router() {
       <Route path="/checklist" component={Checklist} />
       <Route path="/intake" component={Intake} />
       <Route path="/intake/refine">{() => <Intake mode="refine" />}</Route>
+      <Route path="/brief/:id">{(params: { id: string }) => <Brief id={params.id} />}</Route>
       <Route path="/brief" component={Brief} />
       <Route component={NotFound} />
     </Switch>
