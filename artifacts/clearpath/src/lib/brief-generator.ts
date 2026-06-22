@@ -57,6 +57,13 @@ export interface ExecutorTask {
   notes?: string;
 }
 
+export interface ResourceLink {
+  label: string;
+  url: string;
+  description: string;
+  phone?: string;
+}
+
 export interface Brief {
   situationOverview: string;
   keyFacts: { label: string; value: string }[];
@@ -73,6 +80,7 @@ export interface Brief {
   realPropertyContext: string | null;
   executorChecklist: ExecutorTask[] | null;
   stateContext: StateContext | null;
+  resourceLinks: ResourceLink[];
 }
 
 // ---------------------------------------------------------------------------
@@ -834,6 +842,116 @@ function buildExecutorChecklist(a: AssessmentAnswers, i: IntakeAnswers): Executo
   return tasks;
 }
 
+function buildResourceLinks(a: AssessmentAnswers, i: IntakeAnswers): ResourceLink[] {
+  const links: ResourceLink[] = [];
+
+  // ── Always included ────────────────────────────────────────────────────────
+  links.push({
+    label: "Eldercare Locator",
+    url: "https://eldercare.acl.gov",
+    description: "Find local Area Agencies on Aging, transportation, meals, and in-home services.",
+    phone: "1-800-677-1116",
+  });
+
+  // ── Medicare ───────────────────────────────────────────────────────────────
+  if (a.situation !== "loss") {
+    links.push({
+      label: "Medicare.gov",
+      url: "https://www.medicare.gov",
+      description: "Coverage details, plan comparison, and enrollment information.",
+      phone: "1-800-633-4227",
+    });
+    links.push({
+      label: "SHIP — Free Medicare Counseling",
+      url: "https://www.shiphelp.org",
+      description: "State Health Insurance Assistance Program — free, unbiased Medicare counseling in every state.",
+    });
+  }
+
+  // ── Loss-specific ──────────────────────────────────────────────────────────
+  if (a.situation === "loss") {
+    links.push({
+      label: "Social Security Administration",
+      url: "https://www.ssa.gov",
+      description: "Report a death, stop payments, and apply for survivor benefits.",
+      phone: "1-800-772-1213",
+    });
+    links.push({
+      label: "Medicare — Report a Death",
+      url: "https://www.medicare.gov",
+      description: "Cancel supplemental coverage and request processing of final claims.",
+      phone: "1-800-633-4227",
+    });
+    links.push({
+      label: "IRS — Filing for Deceased Persons",
+      url: "https://www.irs.gov/individuals/file-the-final-income-tax-returns-of-a-deceased-person",
+      description: "Guidance on filing the final Form 1040 and estate tax returns.",
+    });
+  }
+
+  // ── Veterans ───────────────────────────────────────────────────────────────
+  if (i.veteran === "Yes") {
+    links.push({
+      label: "VA Benefits — Aid & Attendance",
+      url: "https://www.va.gov/pension/aid-attendance-housebound/",
+      description: "VA Aid & Attendance pension benefit — up to $2,300+/month toward qualifying care costs.",
+      phone: "1-800-827-1000",
+    });
+    links.push({
+      label: "National Council on Veterans Benefits",
+      url: "https://www.nvlsp.org",
+      description: "Free legal assistance to veterans and surviving spouses pursuing benefits claims.",
+    });
+  }
+
+  // ── Legal ──────────────────────────────────────────────────────────────────
+  links.push({
+    label: "NAELA — Find an Elder Law Attorney",
+    url: "https://www.naela.org/findlawyer",
+    description: "National Academy of Elder Law Attorneys — searchable directory by state and specialty.",
+  });
+
+  // ── Dementia / memory care ────────────────────────────────────────────────
+  if (i.dementia === "Yes") {
+    links.push({
+      label: "Alzheimer's Association",
+      url: "https://www.alz.org",
+      description: "Care planning resources, local support groups, and 24/7 helpline for dementia families.",
+      phone: "1-800-272-3900",
+    });
+  }
+
+  // ── Cancer ────────────────────────────────────────────────────────────────
+  if (i.healthCondition?.startsWith("Cancer")) {
+    links.push({
+      label: "Cancer Care — Financial Assistance",
+      url: "https://www.cancercare.org",
+      description: "Free counseling, financial assistance, and care coordination for people affected by cancer.",
+      phone: "1-800-813-4673",
+    });
+  }
+
+  // ── Long-term care planning ───────────────────────────────────────────────
+  if (["planning", "self", "ongoing"].includes(a.situation)) {
+    links.push({
+      label: "LongTermCare.gov",
+      url: "https://acl.gov/ltc",
+      description: "Federal resource on long-term care options, costs, and how to plan and pay for care.",
+    });
+  }
+
+  // ── Geriatric care management ─────────────────────────────────────────────
+  if (["crisis", "ongoing"].includes(a.situation)) {
+    links.push({
+      label: "NAPGCM — Find a Care Manager",
+      url: "https://www.aginglifecare.org/ALCA/Find_an_Aging_Life_Care_Expert/ALCA/Find_an_Expert/Find_an_Expert.aspx",
+      description: "Aging Life Care Association — find a professional geriatric care manager near you.",
+    });
+  }
+
+  return links;
+}
+
 export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswers): Brief {
   const legal = buildLegalDocuments(assessment, intake);
 
@@ -873,5 +991,6 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
     realPropertyContext: buildRealPropertyContext(assessment, intake),
     executorChecklist: buildExecutorChecklist(assessment, intake),
     stateContext: buildStateContext(assessment, intake),
+    resourceLinks: buildResourceLinks(assessment, intake),
   };
 }
