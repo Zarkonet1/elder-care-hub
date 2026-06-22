@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb, ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck, MapPin, Home, HeartPulse, PlusCircle } from "lucide-react";
+import {
+  ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb,
+  ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck,
+  MapPin, Home, HeartPulse, PlusCircle,
+} from "lucide-react";
 import { generateBrief, type Brief, type StateContext, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
 interface BriefSection {
+  key: string;
   icon: React.ReactNode;
   label: string;
   content: React.ReactNode;
@@ -166,9 +175,159 @@ function RedFlagsBanner({ flags }: { flags: string[] }) {
   );
 }
 
-export default function Brief() {
+// ---------------------------------------------------------------------------
+// Situation config
+// ---------------------------------------------------------------------------
+
+interface SituationConfig {
+  badge: string;
+  title: string;
+  subtitle: string;
+  sectionOrder: string[];
+}
+
+function getSituationConfig(situation: string): SituationConfig {
+  switch (situation) {
+    case "loss":
+      return {
+        badge: "Estate & Executor Summary",
+        title: "Estate Summary",
+        subtitle: "A professional overview of the estate, asset inventory, and next steps for the executor.",
+        sectionOrder: [
+          "priority-actions",
+          "situation-overview",
+          "key-facts",
+          "legal-documents",
+          "real-property",
+          "state-context",
+          "family-context",
+          "professional",
+          "already-done",
+        ],
+      };
+
+    case "crisis":
+      return {
+        badge: "Urgent Care Coordination",
+        title: "Urgent Situation Summary",
+        subtitle: "A professional overview prepared for immediate care coordination. Share this with whoever you speak with first.",
+        sectionOrder: [
+          "priority-actions",
+          "professional",
+          "situation-overview",
+          "health-context",
+          "legal-documents",
+          "key-facts",
+          "family-context",
+          "what-needed",
+          "state-context",
+          "real-property",
+          "already-done",
+        ],
+      };
+
+    case "ongoing":
+      return {
+        badge: "Ongoing Care Management",
+        title: "Care Management Summary",
+        subtitle: "A professional overview of current care needs, planning priorities, and financial context.",
+        sectionOrder: [
+          "priority-actions",
+          "situation-overview",
+          "health-context",
+          "key-facts",
+          "legal-documents",
+          "professional",
+          "state-context",
+          "real-property",
+          "family-context",
+          "what-needed",
+          "already-done",
+        ],
+      };
+
+    case "planning":
+      return {
+        badge: "Planning & Preparation",
+        title: "Planning Summary",
+        subtitle: "A professional overview prepared for proactive legal and financial planning.",
+        sectionOrder: [
+          "priority-actions",
+          "situation-overview",
+          "key-facts",
+          "legal-documents",
+          "state-context",
+          "real-property",
+          "professional",
+          "family-context",
+          "what-needed",
+          "already-done",
+        ],
+      };
+
+    case "self":
+      return {
+        badge: "Personal Care Planning",
+        title: "Personal Planning Summary",
+        subtitle: "A professional overview of your current situation, health context, and planning priorities.",
+        sectionOrder: [
+          "priority-actions",
+          "situation-overview",
+          "health-context",
+          "key-facts",
+          "legal-documents",
+          "state-context",
+          "real-property",
+          "professional",
+          "already-done",
+        ],
+      };
+
+    default:
+      return {
+        badge: "Situation Summary",
+        title: "Your Situation Summary",
+        subtitle: "This is what a professional will see before speaking with you.",
+        sectionOrder: [
+          "priority-actions", "situation-overview", "key-facts", "legal-documents",
+          "health-context", "professional", "real-property", "family-context",
+          "what-needed", "state-context", "already-done",
+        ],
+      };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Section label overrides per situation
+// ---------------------------------------------------------------------------
+
+function getSectionLabel(key: string, situation: string): string {
+  if (key === "what-needed" && situation === "crisis") return "What's Needed Right Now";
+  if (key === "professional" && situation === "crisis") return "Recommended First Call";
+  if (key === "already-done" && situation === "loss") return "What's Been Done So Far";
+  return {
+    "priority-actions": "Priority Action List",
+    "situation-overview": "Situation Overview",
+    "key-facts": "Key Facts",
+    "legal-documents": "Legal Documents",
+    "family-context": "Family Context",
+    "what-needed": "What's Needed",
+    "professional": "Recommended Professional",
+    "health-context": "Health & Care Context",
+    "real-property": "Real Property",
+    "already-done": "What's Already Been Done",
+    "state-context": "State Reference Data",
+  }[key] ?? key;
+}
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+
+export default function BriefPage() {
   const [, navigate] = useLocation();
   const [brief, setBrief] = useState<Brief | null>(null);
+  const [situation, setSituation] = useState("default");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
   const [hasDepthAnswers, setHasDepthAnswers] = useState(false);
@@ -190,18 +349,16 @@ export default function Brief() {
       const intake: IntakeAnswers = JSON.parse(rawIntake);
       const generated = generateBrief(assessment, intake);
       setBrief(generated);
-      // Check if any tier 2 depth fields are filled
+      setSituation(assessment.situation || "default");
+
       const depth = intake.dementia || intake.adlLevel || intake.veteran || intake.spouse;
       setHasDepthAnswers(!!depth);
 
-      // Fire-and-forget: email the brief silently
       fetch("/api/send-brief", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ brief: generated }),
-      }).catch(() => {
-        // Non-blocking — email failure doesn't affect the user experience
-      });
+      }).catch(() => {});
     } catch {
       setError(true);
     }
@@ -215,10 +372,7 @@ export default function Brief() {
           <p className="text-muted-foreground mb-6">
             We weren't able to load your summary. Please complete the assessment and intake first.
           </p>
-          <Button
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-            onClick={() => navigate("/start")}
-          >
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => navigate("/start")}>
             Start Over
           </Button>
         </div>
@@ -237,40 +391,50 @@ export default function Brief() {
     );
   }
 
-  const sections: BriefSection[] = [
-    {
+  const config = getSituationConfig(situation);
+
+  // Build the full section map
+  const allSections: Record<string, BriefSection | null> = {
+    "priority-actions": {
+      key: "priority-actions",
       icon: <ListOrdered className="w-5 h-5 text-accent" />,
-      label: "Priority Action List",
+      label: getSectionLabel("priority-actions", situation),
       content: <PriorityActionList actions={brief.priorityActions} />,
     },
-    {
+    "situation-overview": {
+      key: "situation-overview",
       icon: <ClipboardList className="w-5 h-5 text-accent" />,
-      label: "Situation Overview",
+      label: getSectionLabel("situation-overview", situation),
       content: <p className="text-foreground leading-relaxed">{brief.situationOverview}</p>,
     },
-    {
+    "key-facts": {
+      key: "key-facts",
       icon: <FileText className="w-5 h-5 text-accent" />,
-      label: "Key Facts",
+      label: getSectionLabel("key-facts", situation),
       content: <KeyFactsGrid facts={brief.keyFacts} />,
     },
-    {
+    "legal-documents": {
+      key: "legal-documents",
       icon: <Shield className="w-5 h-5 text-accent" />,
-      label: "Legal Documents",
+      label: getSectionLabel("legal-documents", situation),
       content: <LegalColumns inPlace={brief.legalInPlace} missing={brief.legalMissing} />,
     },
-    {
+    "family-context": {
+      key: "family-context",
       icon: <Users className="w-5 h-5 text-accent" />,
-      label: "Family Context",
+      label: getSectionLabel("family-context", situation),
       content: <p className="text-foreground leading-relaxed">{brief.familyContext}</p>,
     },
-    {
+    "what-needed": {
+      key: "what-needed",
       icon: <Lightbulb className="w-5 h-5 text-accent" />,
-      label: "What's Needed",
+      label: getSectionLabel("what-needed", situation),
       content: <p className="text-foreground leading-relaxed">{brief.whatNeeded}</p>,
     },
-    {
+    "professional": {
+      key: "professional",
       icon: <UserCheck className="w-5 h-5 text-accent" />,
-      label: "Recommended Professional",
+      label: getSectionLabel("professional", situation),
       content: (
         <div>
           <p className="text-sm font-semibold text-primary mb-2">{brief.professionalMatch.type}</p>
@@ -278,52 +442,57 @@ export default function Brief() {
         </div>
       ),
     },
-    ...(brief.healthContext ? [{
+    "health-context": brief.healthContext ? {
+      key: "health-context",
       icon: <HeartPulse className="w-5 h-5 text-accent" />,
-      label: "Health & Care Context",
+      label: getSectionLabel("health-context", situation),
       content: <p className="text-foreground leading-relaxed">{brief.healthContext}</p>,
-    }] : []),
-    ...(brief.realPropertyContext ? [{
+    } : null,
+    "real-property": brief.realPropertyContext ? {
+      key: "real-property",
       icon: <Home className="w-5 h-5 text-accent" />,
-      label: "Real Property",
+      label: getSectionLabel("real-property", situation),
       content: <p className="text-foreground leading-relaxed">{brief.realPropertyContext}</p>,
-    }] : []),
-    {
+    } : null,
+    "already-done": {
+      key: "already-done",
       icon: <Phone className="w-5 h-5 text-accent" />,
-      label: "What's Already Been Done",
+      label: getSectionLabel("already-done", situation),
       content: <p className="text-foreground leading-relaxed">{brief.alreadyDone}</p>,
     },
-    ...(brief.stateContext ? [{
+    "state-context": brief.stateContext ? {
+      key: "state-context",
       icon: <MapPin className="w-5 h-5 text-accent" />,
-      label: "State Reference Data",
+      label: getSectionLabel("state-context", situation),
       content: <StateContextPanel ctx={brief.stateContext} />,
-    }] : []),
-  ];
+    } : null,
+  };
+
+  // Order sections per situation, filtering out nulls
+  const orderedSections = config.sectionOrder
+    .map((key) => allSections[key])
+    .filter((s): s is BriefSection => s !== null && s !== undefined);
 
   return (
     <div className="min-h-screen bg-background py-12 pb-24">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
 
+        {/* Hero — situation-specific */}
         <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-accent/20 rounded-full mb-5">
             <CheckCircle2 className="w-7 h-7 text-accent" />
           </div>
-          <h1 className="font-serif text-3xl md:text-4xl font-bold text-secondary mb-3">
-            Your Situation Summary
-          </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            This is what a professional will see before speaking with you. No personal identifying information is included.
-          </p>
+          <p className="text-xs font-semibold tracking-widest text-primary uppercase mb-3">{config.badge}</p>
+          <h1 className="font-serif text-3xl md:text-4xl font-bold text-secondary mb-3">{config.title}</h1>
+          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">{config.subtitle}</p>
         </div>
 
         <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
 
-          {brief.redFlags.length > 0 && (
-            <RedFlagsBanner flags={brief.redFlags} />
-          )}
+          {brief.redFlags.length > 0 && <RedFlagsBanner flags={brief.redFlags} />}
 
-          {sections.map((section, i) => (
-            <div key={i} className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+          {orderedSections.map((section) => (
+            <div key={section.key} className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
               <div className="bg-secondary/5 border-b border-border px-7 py-5 flex items-center gap-3">
                 {section.icon}
                 <h2 className="font-serif text-lg font-semibold text-secondary">{section.label}</h2>
