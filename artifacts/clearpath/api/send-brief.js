@@ -133,6 +133,11 @@ function formatBriefHtml(brief) {
       <p style="margin:0 0 28px;color:#374151;line-height:1.65;font-size:15px">${brief.healthContext}</p>
       ` : ""}
 
+      ${brief.medicareContext ? `
+      <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">Medicare Coverage</h2>
+      <p style="margin:0 0 28px;color:#374151;line-height:1.65;font-size:15px">${brief.medicareContext}</p>
+      ` : ""}
+
       ${brief.realPropertyContext ? `
       <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">Real Property</h2>
       <p style="margin:0 0 28px;color:#374151;line-height:1.65;font-size:15px">${brief.realPropertyContext}</p>

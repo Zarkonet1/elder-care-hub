@@ -69,6 +69,7 @@ export interface Brief {
   professionalMatch: { type: string; reason: string };
   redFlags: string[];
   healthContext: string | null;
+  medicareContext: string | null;
   realPropertyContext: string | null;
   executorChecklist: ExecutorTask[] | null;
   stateContext: StateContext | null;
@@ -226,14 +227,66 @@ function buildHealthContext(a: AssessmentAnswers, i: IntakeAnswers): string | nu
     }
   }
 
-  if (i.medicareStatus) {
-    if (i.medicareStatus.startsWith("Yes")) {
-      lines.push("Medicare is active. It covers skilled nursing and rehabilitation after a qualifying 3-day hospital stay (up to 100 days), home health services when homebound, and hospice — but does not cover long-term custodial care, which constitutes the majority of elder care costs.");
-    } else if (i.medicareStatus.startsWith("Not yet")) {
-      lines.push("Medicare enrollment has not yet occurred. If the person is approaching 65, enrollment timing matters — late enrollment in Part B carries permanent premium penalties. A Medicare counselor or SHIP advisor can clarify enrollment windows and options.");
-    } else if (i.medicareStatus === "No") {
-      lines.push("The person is not currently enrolled in Medicare. If under 65, other coverage should be confirmed. If approaching eligibility, enrollment planning should begin promptly to avoid late penalties.");
-    }
+  return lines.length > 0 ? lines.join(" ") : null;
+}
+
+function buildMedicareContext(a: AssessmentAnswers, i: IntakeAnswers): string | null {
+  if (a.situation === "loss") return null;
+  if (!i.medicareStatus || i.medicareStatus === "No") return null;
+
+  const notYetEnrolled = i.medicareStatus.startsWith("Not yet");
+  const notSure = i.medicareStatus === "Not sure";
+  const lines: string[] = [];
+
+  if (notYetEnrolled) {
+    lines.push("Medicare enrollment has not yet occurred. The Initial Enrollment Period opens 3 months before the 65th birthday and closes 3 months after — missing it creates a permanent 10% per-year penalty on Part B premiums. If the person currently has employer-sponsored coverage, a Special Enrollment Period applies when that coverage ends. Contact Social Security (1-800-772-1213) or a SHIP Medicare counselor (shipcenter.org) to review timing and options.");
+    return lines.join(" ");
+  }
+
+  if (notSure) {
+    lines.push("Medicare enrollment status should be confirmed. Call 1-800-MEDICARE or check Medicare.gov to verify which parts are active. This matters especially when evaluating what care costs are covered vs. what falls to private pay or Medicaid.");
+    return lines.join(" ");
+  }
+
+  // Enrolled — care-setting-specific guidance
+  const living = i.living?.toLowerCase() || "";
+  const isHospital    = living.includes("hospital");
+  const isSNF         = living.includes("nursing home") || living.includes("rehab");
+  const isHome        = living.includes("at home");
+  const isAL          = living.includes("assisted living") || living.includes("independent living");
+  const isMemoryCare  = living.includes("memory care");
+
+  if (isHospital) {
+    lines.push("Medicare Part A covers inpatient hospital stays after the annual deductible. One critical distinction: confirm whether the person has been admitted as an inpatient vs. placed under 'observation status.' Observation is billed under Part B — and does not count toward the 3-day qualifying stay required to trigger Medicare's skilled nursing facility benefit.");
+    lines.push("A qualifying 3-day inpatient admission unlocks up to 100 days of SNF coverage: days 1–20 at no cost, days 21–100 with a daily copay (approximately $200/day in 2025). Ask the hospital care coordinator to clarify admission status in writing before discharge planning begins.");
+  } else if (isSNF) {
+    lines.push("Medicare covers skilled nursing facility care for up to 100 days following a qualifying 3-day inpatient hospital stay. The benefit structure: days 1–20 are fully covered; days 21–100 carry a daily copay (~$200/day in 2025). Day 101 and beyond are not covered — costs shift to Medicaid (if eligible) or private pay at that point.");
+    lines.push("Medicare coverage continues only while skilled services are medically necessary — nursing, physical therapy, occupational therapy, or speech therapy. If the care team determines the person has plateaued and no longer needs skilled care, Medicare stops paying even before the 100-day maximum. An appeal can be filed if you disagree with that determination; ask the facility for a written notice before coverage ends.");
+  } else if (isHome) {
+    lines.push("Medicare's home health benefit covers skilled nursing visits, physical therapy, occupational therapy, and speech therapy when the person is homebound and a physician has ordered skilled care. No copay and no prior hospitalization is required for home health coverage.");
+    lines.push("What Medicare does not cover: custodial home care — the daily help with bathing, dressing, toileting, and meals that constitutes the majority of elder care cost. Custodial care must be funded privately, through long-term care insurance, or through Medicaid. A home health agency can identify which specific services are Medicare-billable vs. private pay.");
+  } else if (isAL) {
+    lines.push("Assisted living and independent living costs — room, board, and personal care — are not covered by Medicare. Medicare may cover skilled services delivered within the facility (visiting physical therapist, wound care nurse, durable medical equipment), but does not cover the facility itself.");
+    lines.push("Residents typically continue using Medicare Part B for physician visits and outpatient services. If the person requires a higher care level and transfers to a skilled nursing facility after a hospital admission, Medicare's SNF benefit may apply at that point.");
+  } else if (isMemoryCare) {
+    lines.push("Memory care facility costs are not covered by Medicare. Medicare may reimburse skilled services delivered within the facility — physical therapy, occupational therapy, or skilled nursing visits — but not room, board, or dementia-specific care.");
+    lines.push("Most memory care residents fund costs through private pay until Medicaid eligibility is established. Medicaid covers memory care through waiver programs in most states — an elder law attorney can advise on the spend-down process and application timeline.");
+  } else {
+    // Generic enrolled summary (no care setting known)
+    lines.push("Medicare is active. Part A covers inpatient hospital care and skilled nursing facility stays after a qualifying hospital admission (up to 100 days). Part B covers physician visits, outpatient services, and home health. Neither Part A nor Part B covers custodial long-term care — the daily assistance with bathing, dressing, and meals that constitutes the majority of elder care costs at home or in a facility.");
+  }
+
+  // Hospice addendum for terminal or serious conditions
+  const hasCancer      = i.healthCondition?.startsWith("Cancer");
+  const hasNeurological = i.healthCondition?.startsWith("Neurological");
+  if (hasCancer || hasNeurological) {
+    lines.push("Medicare's hospice benefit is available when a physician certifies a terminal prognosis of 6 months or less and the patient elects comfort-focused care over curative treatment. Hospice covers nursing visits, aide services, medications for the terminal condition, chaplaincy, and family counseling — with no copay for covered services. Electing hospice does not mean giving up all medical care, only curative treatment for the terminal diagnosis.");
+  }
+
+  // High care need at home — custodial gap clarification if not already covered
+  const highCare = i.adlLevel?.startsWith("Fully dependent") || i.adlLevel?.startsWith("Significant assistance");
+  if (highCare && isHome && !lines.some(l => l.includes("custodial"))) {
+    lines.push("Given the current level of daily care assistance needed, it is worth clarifying which specific services are Medicare-billable skilled care vs. custodial care that must be funded privately. A care manager or home health agency can help map services to coverage categories.");
   }
 
   return lines.length > 0 ? lines.join(" ") : null;
@@ -816,6 +869,7 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
     professionalMatch: buildProfessionalMatch(assessment, intake),
     redFlags: buildRedFlags(assessment, intake),
     healthContext: buildHealthContext(assessment, intake),
+    medicareContext: buildMedicareContext(assessment, intake),
     realPropertyContext: buildRealPropertyContext(assessment, intake),
     executorChecklist: buildExecutorChecklist(assessment, intake),
     stateContext: buildStateContext(assessment, intake),

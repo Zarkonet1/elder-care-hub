@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb,
   ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck,
-  MapPin, Home, HeartPulse, PlusCircle, Link2, Check,
+  MapPin, Home, HeartPulse, Activity, PlusCircle, Link2, Check,
 } from "lucide-react";
 import { generateBrief, type Brief, type StateContext, type ExecutorTask, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
@@ -259,6 +259,7 @@ function getSituationConfig(situation: string): SituationConfig {
           "professional",
           "situation-overview",
           "health-context",
+          "medicare-context",
           "legal-documents",
           "key-facts",
           "family-context",
@@ -278,6 +279,7 @@ function getSituationConfig(situation: string): SituationConfig {
           "priority-actions",
           "situation-overview",
           "health-context",
+          "medicare-context",
           "key-facts",
           "legal-documents",
           "professional",
@@ -299,6 +301,7 @@ function getSituationConfig(situation: string): SituationConfig {
           "situation-overview",
           "key-facts",
           "legal-documents",
+          "medicare-context",
           "state-context",
           "real-property",
           "professional",
@@ -317,6 +320,7 @@ function getSituationConfig(situation: string): SituationConfig {
           "priority-actions",
           "situation-overview",
           "health-context",
+          "medicare-context",
           "key-facts",
           "legal-documents",
           "state-context",
@@ -357,6 +361,7 @@ function getSectionLabel(key: string, situation: string): string {
     "what-needed": "What's Needed",
     "professional": "Recommended Professional",
     "health-context": "Health & Care Context",
+    "medicare-context": "Medicare Coverage",
     "real-property": "Real Property",
     "already-done": "What's Already Been Done",
     "state-context": "State Reference Data",
@@ -585,6 +590,12 @@ export default function BriefPage({ id }: BriefPageProps) {
       icon: <HeartPulse className="w-5 h-5 text-accent" />,
       label: getSectionLabel("health-context", situation),
       content: <p className="text-foreground leading-relaxed">{brief.healthContext}</p>,
+    } : null,
+    "medicare-context": brief.medicareContext ? {
+      key: "medicare-context",
+      icon: <Activity className="w-5 h-5 text-accent" />,
+      label: getSectionLabel("medicare-context", situation),
+      content: <p className="text-foreground leading-relaxed">{brief.medicareContext}</p>,
     } : null,
     "real-property": brief.realPropertyContext ? {
       key: "real-property",
