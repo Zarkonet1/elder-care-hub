@@ -6,7 +6,7 @@ import {
   ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck,
   MapPin, Home, HeartPulse, PlusCircle,
 } from "lucide-react";
-import { generateBrief, type Brief, type StateContext, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
+import { generateBrief, type Brief, type StateContext, type ExecutorTask, type AssessmentAnswers, type IntakeAnswers } from "@/lib/brief-generator";
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -153,6 +153,48 @@ function StateContextPanel({ ctx }: { ctx: StateContext }) {
   );
 }
 
+const TIMEFRAME_LABELS: Record<ExecutorTask["timeframe"], string> = {
+  "immediate": "Within 24–72 Hours",
+  "first-week": "First Week",
+  "first-month": "First Month",
+  "ongoing": "Ongoing (Months 2–12)",
+};
+
+function ExecutorChecklist({ tasks }: { tasks: ExecutorTask[] }) {
+  const grouped = tasks.reduce<Record<string, ExecutorTask[]>>((acc, t) => {
+    if (!acc[t.timeframe]) acc[t.timeframe] = [];
+    acc[t.timeframe].push(t);
+    return acc;
+  }, {});
+
+  const order: ExecutorTask["timeframe"][] = ["immediate", "first-week", "first-month", "ongoing"];
+
+  return (
+    <div className="space-y-6">
+      {order.filter((tf) => grouped[tf]?.length).map((tf) => (
+        <div key={tf}>
+          <p className="text-xs font-semibold tracking-wider text-accent uppercase mb-3">
+            {TIMEFRAME_LABELS[tf]}
+          </p>
+          <div className="space-y-3">
+            {grouped[tf].map((task, i) => (
+              <div key={i} className="flex items-start gap-3 bg-secondary/5 border border-border rounded-xl px-4 py-3">
+                <span className="flex-shrink-0 w-5 h-5 rounded border-2 border-border mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-foreground leading-snug">{task.task}</p>
+                  {task.notes && (
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{task.notes}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function RedFlagsBanner({ flags }: { flags: string[] }) {
   if (flags.length === 0) return null;
   return (
@@ -195,6 +237,7 @@ function getSituationConfig(situation: string): SituationConfig {
         subtitle: "A professional overview of the estate, asset inventory, and next steps for the executor.",
         sectionOrder: [
           "priority-actions",
+          "executor-checklist",
           "situation-overview",
           "key-facts",
           "legal-documents",
@@ -453,6 +496,12 @@ export default function BriefPage() {
       icon: <Home className="w-5 h-5 text-accent" />,
       label: getSectionLabel("real-property", situation),
       content: <p className="text-foreground leading-relaxed">{brief.realPropertyContext}</p>,
+    } : null,
+    "executor-checklist": brief.executorChecklist ? {
+      key: "executor-checklist",
+      icon: <ClipboardList className="w-5 h-5 text-accent" />,
+      label: "Executor Checklist",
+      content: <ExecutorChecklist tasks={brief.executorChecklist} />,
     } : null,
     "already-done": {
       key: "already-done",

@@ -51,6 +51,12 @@ export interface StateContext {
   disclaimer: string;
 }
 
+export interface ExecutorTask {
+  timeframe: "immediate" | "first-week" | "first-month" | "ongoing";
+  task: string;
+  notes?: string;
+}
+
 export interface Brief {
   situationOverview: string;
   keyFacts: { label: string; value: string }[];
@@ -64,6 +70,7 @@ export interface Brief {
   redFlags: string[];
   healthContext: string | null;
   realPropertyContext: string | null;
+  executorChecklist: ExecutorTask[] | null;
   stateContext: StateContext | null;
 }
 
@@ -642,6 +649,138 @@ function buildRedFlags(a: AssessmentAnswers, i: IntakeAnswers): string[] {
   return flags;
 }
 
+function buildExecutorChecklist(a: AssessmentAnswers, i: IntakeAnswers): ExecutorTask[] | null {
+  if (a.situation !== "loss") return null;
+
+  const tasks: ExecutorTask[] = [];
+  const stateProbateWait = i.state && STATE_DATA[i.state] ? STATE_DATA[i.state].probateWait : "several months";
+
+  // ── Immediate (24–72 hours) ────────────────────────────────────────────────
+  tasks.push({
+    timeframe: "immediate",
+    task: "Obtain certified copies of the death certificate",
+    notes: "Request 10–15 copies. Banks, courts, insurance companies, government agencies, and financial institutions each require an original certified copy — not a photocopy.",
+  });
+  tasks.push({
+    timeframe: "immediate",
+    task: "Locate the will and any trust documents",
+    notes: "The original signed will is required for probate. Check home files, a safe deposit box, or with any attorney who may have prepared it.",
+  });
+  tasks.push({
+    timeframe: "immediate",
+    task: "Secure the property and collect the mail",
+    notes: "If the home is now vacant, consider changing locks and forwarding mail to the executor's address to prevent missed bills or notices.",
+  });
+  tasks.push({
+    timeframe: "immediate",
+    task: "Notify the Social Security Administration",
+    notes: "Call 1-800-772-1213. If the person received a payment for the month of death, it must be returned to SSA. Surviving spouses may be eligible for survivor benefits.",
+  });
+  if (i.veteran === "Yes") {
+    tasks.push({
+      timeframe: "immediate",
+      task: "Notify the Department of Veterans Affairs",
+      notes: "Call 1-800-827-1000. The VA may provide burial benefits and surviving spouse or dependent benefits. Have the person's DD-214 discharge paperwork available.",
+    });
+  }
+
+  // ── First week ─────────────────────────────────────────────────────────────
+  tasks.push({
+    timeframe: "first-week",
+    task: "Notify Medicare and any supplemental insurance carriers",
+    notes: "Call 1-800-MEDICARE. Cancel supplemental (Medigap) coverage to stop ongoing premium charges. Request any outstanding claims be processed.",
+  });
+  tasks.push({
+    timeframe: "first-week",
+    task: "Notify banks and financial institutions",
+    notes: "Bring certified death certificates. Ask to freeze individual accounts, identify any joint or POD (payable on death) accounts, and request date-of-death balances for inventory purposes.",
+  });
+  tasks.push({
+    timeframe: "first-week",
+    task: "Cancel credit cards and recurring subscriptions",
+    notes: "Request account statements showing balances owed at the date of death — these become estate debts. Cancel automatic payments to avoid charges against the account.",
+  });
+  if (i.retirement === "Yes") {
+    tasks.push({
+      timeframe: "first-week",
+      task: "Contact retirement account administrators (IRA, 401k, pension)",
+      notes: "Retirement accounts pass directly to named beneficiaries outside the will and outside probate. Each administrator has its own transfer or distribution process — start this early.",
+    });
+  }
+  tasks.push({
+    timeframe: "first-week",
+    task: "Consult a probate or estate attorney",
+    notes: `In ${i.state || "your state"}, the probate waiting period is typically ${stateProbateWait}. An attorney will clarify which assets require probate, the court filing requirements, and the creditor notification process specific to your state.`,
+  });
+
+  // ── First month ────────────────────────────────────────────────────────────
+  if (i.legalDocs !== "Trust only" && i.legalDocs !== "Both a will and a trust") {
+    tasks.push({
+      timeframe: "first-month",
+      task: "File for probate with the county court",
+      notes: "Required to transfer titled assets when no trust governs them. File promptly — delays can complicate real estate sales and account transfers. The court will issue Letters Testamentary authorizing you to act as executor.",
+    });
+    tasks.push({
+      timeframe: "first-month",
+      task: "Publish creditor notice as required by state law",
+      notes: "Most states require formal creditor notification through publication in a local newspaper. This starts the clock on the creditor claim period — typically 3–6 months — after which late claims are barred.",
+    });
+  }
+  tasks.push({
+    timeframe: "first-month",
+    task: "Open a dedicated estate bank account",
+    notes: "All estate income (rent, dividends, refunds) and expenses (bills, attorney fees, court costs) must flow through a single estate account. Do not commingle estate funds with personal funds.",
+  });
+  tasks.push({
+    timeframe: "first-month",
+    task: "Complete a full inventory of all assets and their fair market value as of date of death",
+    notes: "Include real estate, bank and investment accounts, retirement accounts, vehicles, personal property, business interests, and life insurance. This inventory is required for probate court and estate tax purposes.",
+  });
+  if (i.realEstate === "Yes") {
+    tasks.push({
+      timeframe: "first-month",
+      task: "Order a title search on the real estate",
+      notes: "Confirms ownership, identifies any liens or encumbrances, and determines the correct transfer path for the property — whether through affidavit, probate, or trust administration.",
+    });
+  }
+  tasks.push({
+    timeframe: "first-month",
+    task: "Locate and file claims on all life insurance policies",
+    notes: "Life insurance passes directly to named beneficiaries outside the will and outside probate. Contact each insurer with a certified death certificate. Most policies pay within 30–60 days of claim.",
+  });
+
+  // ── Ongoing ────────────────────────────────────────────────────────────────
+  tasks.push({
+    timeframe: "ongoing",
+    task: "Pay valid estate debts from estate funds only",
+    notes: "Do not pay debts from personal funds. Estate debts are paid in priority order: secured debts first, then taxes, then unsecured creditors. Paying in the wrong order can create personal liability.",
+  });
+  tasks.push({
+    timeframe: "ongoing",
+    task: "File the final federal income tax return (Form 1040)",
+    notes: "Due April 15 of the year following death, or October 15 with extension. Covers income earned from January 1 through the date of death. A tax professional experienced with decedent returns is strongly advisable.",
+  });
+  if (i.assets === "$500,000 – $1,000,000" || i.assets === "Over $1,000,000") {
+    tasks.push({
+      timeframe: "ongoing",
+      task: "Determine if a federal or state estate tax return is required",
+      notes: "The federal estate tax exemption is $13.61 million (2024). Many states have lower thresholds — some as low as $1 million. Consult a tax attorney or CPA familiar with estate tax.",
+    });
+  }
+  tasks.push({
+    timeframe: "ongoing",
+    task: "Distribute assets to beneficiaries per the will or state law",
+    notes: "Do not distribute until all debts, taxes, and court requirements are fully satisfied. Premature distribution can create personal liability for the executor if valid claims remain unpaid.",
+  });
+  tasks.push({
+    timeframe: "ongoing",
+    task: "File the final accounting with the probate court and close the estate",
+    notes: "Once all assets are distributed and debts paid, the executor files a final accounting. The court issues a formal order closing the estate and discharging the executor from further responsibility.",
+  });
+
+  return tasks;
+}
+
 export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswers): Brief {
   const legal = buildLegalDocuments(assessment, intake);
 
@@ -678,6 +817,7 @@ export function generateBrief(assessment: AssessmentAnswers, intake: IntakeAnswe
     redFlags: buildRedFlags(assessment, intake),
     healthContext: buildHealthContext(assessment, intake),
     realPropertyContext: buildRealPropertyContext(assessment, intake),
+    executorChecklist: buildExecutorChecklist(assessment, intake),
     stateContext: buildStateContext(assessment, intake),
   };
 }

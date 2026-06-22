@@ -80,6 +80,25 @@ function formatBriefHtml(brief) {
         ${priorityActionsHtml}
       </table>
 
+      ${brief.executorChecklist && brief.executorChecklist.length > 0 ? `
+      <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">Executor Checklist</h2>
+      ${["immediate","first-week","first-month","ongoing"].map((tf) => {
+        const timeframeLabels = { immediate: "Within 24–72 Hours", "first-week": "First Week", "first-month": "First Month", ongoing: "Ongoing (Months 2–12)" };
+        const group = brief.executorChecklist.filter(t => t.timeframe === tf);
+        if (!group.length) return "";
+        return `
+          <p style="margin:16px 0 8px;font-size:11px;font-weight:700;color:#4b6bfb;text-transform:uppercase;letter-spacing:0.08em">${timeframeLabels[tf]}</p>
+          ${group.map(t => `
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px 14px;margin-bottom:8px">
+              <p style="margin:0 0 ${t.notes ? "4px" : "0"};font-size:14px;font-weight:600;color:#1a1a2e">☐ ${t.task}</p>
+              ${t.notes ? `<p style="margin:0;font-size:12px;color:#6b7280;line-height:1.5">${t.notes}</p>` : ""}
+            </div>
+          `).join("")}
+        `;
+      }).join("")}
+      <div style="margin-bottom:28px"></div>
+      ` : ""}
+
       <h2 style="margin:0 0 12px;color:#1a1a2e;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #c9a84c;padding-bottom:8px">Situation Overview</h2>
       <p style="margin:0 0 28px;color:#374151;line-height:1.65;font-size:15px">${brief.situationOverview}</p>
 
