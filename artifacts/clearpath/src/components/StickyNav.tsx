@@ -24,7 +24,7 @@ export function StickyNav() {
             <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground group-hover:scale-105 transition-transform">
               <Leaf className="w-4 h-4" />
             </div>
-            <span className="font-serif font-bold text-xl text-secondary">ClearPath</span>
+            <span className="font-serif font-bold text-xl text-secondary">ClearPath Navigator</span>
           </Link>
 
           {/* Desktop Nav */}
