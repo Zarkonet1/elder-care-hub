@@ -239,7 +239,7 @@ export default function Resources() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    document.title = "Resources & Guidance | ClearPath Elder Guide";
+    document.title = "Resources & Guidance | ClearPath Navigator";
     window.scrollTo(0, 0);
   }, [match]);
 

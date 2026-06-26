@@ -34,7 +34,7 @@ export default function Experts() {
   const [availabilityFilter, setAvailabilityFilter] = useState("all");
 
   useEffect(() => {
-    document.title = "Find an Expert | ClearPath Elder Guide";
+    document.title = "Find an Expert | ClearPath Navigator";
     window.scrollTo(0, 0);
   }, []);
 

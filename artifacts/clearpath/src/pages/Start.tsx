@@ -26,7 +26,7 @@ export default function Start() {
   });
 
   useEffect(() => {
-    document.title = "Find Your Starting Point | ClearPath Elder Guide";
+    document.title = "Find Your Starting Point | ClearPath Navigator";
     window.scrollTo(0, 0);
   }, [step]);
 

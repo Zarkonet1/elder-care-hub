@@ -7,7 +7,7 @@ import { Compass, Users, ArrowRight, ShieldCheck, BookOpen, MapPin, HeartHandsha
 
 export default function Home() {
   useEffect(() => {
-    document.title = "ClearPath Elder Guide | You Don't Have to Figure This Out Alone";
+    document.title = "ClearPath Navigator | You Don't Have to Figure This Out Alone";
   }, []);
 
   return (

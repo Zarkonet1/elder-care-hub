@@ -22,7 +22,7 @@ export default function ExpertProfile() {
 
   useEffect(() => {
     if (expert) {
-      document.title = `${expert.name} | ClearPath Elder Guide`;
+      document.title = `${expert.name} | ClearPath Navigator`;
     }
     window.scrollTo(0, 0);
   }, [expert]);
@@ -155,7 +155,7 @@ export default function ExpertProfile() {
                 <Button
                   variant="outline"
                   className="w-full h-12 text-base border-secondary text-secondary hover:bg-secondary/5"
-                  onClick={() => window.open(`mailto:info@clearpathelderguide.com?subject=General Question via ClearPath Elder Guide — ${expert.name}`)}
+                  onClick={() => window.open(`mailto:info@clearpath-navigator.com?subject=General Question via ClearPath Navigator — ${expert.name}`)}
                 >
                   <Mail className="w-4 h-4 mr-2" />
                   Ask a General Question

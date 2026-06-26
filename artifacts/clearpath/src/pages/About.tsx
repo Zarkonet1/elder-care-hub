@@ -26,7 +26,7 @@ const DIFFERENTIATORS = [
 
 export default function About() {
   useEffect(() => {
-    document.title = "About | ClearPath Elder Guide";
+    document.title = "About | ClearPath Navigator";
     window.scrollTo(0, 0);
   }, []);
 
@@ -68,7 +68,7 @@ export default function About() {
               So we built the resource we wished had existed.
             </p>
             <p>
-              ClearPath Elder Guide is for every family that has ever sat in a hospital waiting room with a phone
+              ClearPath Navigator is for every family that has ever sat in a hospital waiting room with a phone
               in hand, searching for answers and finding only confusion. It's for the adult child trying to do
               right by their parent. For the aging individual who wants to maintain control over their own story.
               For the planner who knows that waiting is the one thing they can't afford to do.
@@ -124,7 +124,7 @@ export default function About() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 className="font-serif text-2xl font-bold text-secondary mb-4">A Note on Our Content</h2>
           <p className="text-foreground leading-relaxed">
-            ClearPath Elder Guide provides general educational information only. Nothing on this website constitutes
+            ClearPath Navigator provides general educational information only. Nothing on this website constitutes
             legal, financial, or medical advice. Every family's situation is unique — the information here is a
             starting point, not a substitute for guidance from a qualified professional. Always consult a licensed
             attorney, financial advisor, or healthcare provider for advice specific to your circumstances.

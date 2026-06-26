@@ -277,8 +277,8 @@ export default function Intake({ mode = "core" }: IntakeProps) {
 
   useEffect(() => {
     document.title = mode === "refine"
-      ? "Add More Detail | ClearPath Elder Guide"
-      : "Get Started | ClearPath Elder Guide";
+      ? "Add More Detail | ClearPath Navigator"
+      : "Get Started | ClearPath Navigator";
     window.scrollTo(0, 0);
 
     const savedAssessment = localStorage.getItem("clearpath_assessment");

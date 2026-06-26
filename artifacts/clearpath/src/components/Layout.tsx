@@ -14,7 +14,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <div className="w-8 h-8 rounded-full bg-[#C9922A] flex items-center justify-center text-white font-bold text-base">
                 C
               </div>
-              <span className="font-serif font-bold text-xl">ClearPath Elder Guide</span>
+              <span className="font-serif font-bold text-xl">ClearPath Navigator</span>
             </div>
             <p className="text-[#FAF7F2]/70 max-w-sm mb-6">
               Clear guidance for life's hardest transitions.
@@ -33,9 +33,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </div>
         <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-[#FAF7F2]/20 text-center">
           <p className="text-xs text-[#FAF7F2]/60 max-w-3xl mx-auto leading-relaxed mb-4">
-            <span className="font-semibold text-[#FAF7F2]/75">Disclaimer:</span> ClearPath Elder Guide provides general educational information only. Nothing on this website constitutes legal, financial, or medical advice. Every situation is different — the information here is a starting point, not a substitute for guidance from a qualified professional. Always consult a licensed attorney, financial advisor, or healthcare provider for advice specific to your circumstances.
+            <span className="font-semibold text-[#FAF7F2]/75">Disclaimer:</span> ClearPath Navigator provides general educational information only. Nothing on this website constitutes legal, financial, or medical advice. Every situation is different — the information here is a starting point, not a substitute for guidance from a qualified professional. Always consult a licensed attorney, financial advisor, or healthcare provider for advice specific to your circumstances.
           </p>
-          <p className="text-xs text-[#FAF7F2]/40">© 2026 ClearPath Elder Guide</p>
+          <p className="text-xs text-[#FAF7F2]/40">© 2026 ClearPath Navigator</p>
         </div>
       </footer>
     </div>

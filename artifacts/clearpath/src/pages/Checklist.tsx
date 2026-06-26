@@ -67,7 +67,7 @@ const SECTIONS: ChecklistSection[] = [
     id: "s5",
     headline: "What Comes Next",
     links: [
-      { text: "Visit ClearPath Elder Guide for full guidance on each of these areas" },
+      { text: "Visit ClearPath Navigator for full guidance on each of these areas" },
       { text: "Take the 5-minute assessment to get your personalized starting point", href: "/start" },
       { text: "Browse our expert network to find the right professional for your situation", href: "/experts" },
     ],
@@ -81,7 +81,7 @@ export default function Checklist() {
   const checkedCount = Object.values(checked).filter(Boolean).length;
 
   useEffect(() => {
-    document.title = "Eldercare Crisis Checklist | ClearPath Elder Guide";
+    document.title = "Eldercare Crisis Checklist | ClearPath Navigator";
     window.scrollTo(0, 0);
   }, []);
 
@@ -116,7 +116,7 @@ export default function Checklist() {
           <div className="w-8 h-8 rounded-full bg-[#1B2A4A] flex items-center justify-center">
             <Leaf className="w-4 h-4 text-white" />
           </div>
-          <span className="font-serif font-bold text-xl text-[#1B2A4A]">ClearPath Elder Guide</span>
+          <span className="font-serif font-bold text-xl text-[#1B2A4A]">ClearPath Navigator</span>
         </div>
 
         {/* Page header */}
@@ -262,12 +262,12 @@ export default function Checklist() {
 
           {/* Bottom disclaimer */}
           <div className="mt-10 text-xs text-muted-foreground leading-relaxed text-center border-t border-border pt-8">
-            This checklist is for general informational purposes only and does not constitute legal, financial, or medical advice. ClearPath Elder Guide — clearpathelderguide.com
+            This checklist is for general informational purposes only and does not constitute legal, financial, or medical advice. ClearPath Navigator — clearpath-navigator.com
           </div>
 
           {/* Print disclaimer (same, always shown in print) */}
           <div className="print-disclaimer mt-6 text-xs text-gray-500 border-t border-gray-300 pt-4">
-            This checklist is for general informational purposes only and does not constitute legal, financial, or medical advice. ClearPath Elder Guide — clearpathelderguide.com
+            This checklist is for general informational purposes only and does not constitute legal, financial, or medical advice. ClearPath Navigator — clearpath-navigator.com
           </div>
 
           {/* Bottom CTA */}
