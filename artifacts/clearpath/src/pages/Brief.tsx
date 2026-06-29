@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   ArrowRight, CheckCircle2, Shield, FileText, Users, Lightbulb,
   ClipboardList, Phone, AlertTriangle, ListOrdered, UserCheck,
@@ -254,7 +256,7 @@ function PrintableChecklist({ tasks }: { tasks: ExecutorTask[] }) {
   const handlePrint = () => {
     const win = window.open("", "_blank");
     if (!win) return;
-    const html = `<!DOCTYPE html><html><head><title>Executor Checklist — ClearPath</title>
+    const html = `<!DOCTYPE html><html><head><title>Executor Checklist — ClearPath Navigator</title>
     <style>
       body { font-family: Arial, sans-serif; max-width: 720px; margin: 40px auto; color: #374151; }
       h1 { font-size: 22px; color: #1a1a2e; border-bottom: 3px solid #c9a84c; padding-bottom: 8px; margin-bottom: 24px; }
@@ -557,6 +559,10 @@ export default function BriefPage({ id }: BriefPageProps) {
   const [situation, setSituation] = useState("default");
   const [briefId, setBriefId] = useState<string | null>(id ?? null);
   const [submitted, setSubmitted] = useState(false);
+  const [connectName, setConnectName] = useState("");
+  const [connectEmail, setConnectEmail] = useState("");
+  const [connectSending, setConnectSending] = useState(false);
+  const [connectError, setConnectError] = useState(false);
   const [error, setError] = useState(false);
   const [expired, setExpired] = useState(false);
   const [hasDepthAnswers, setHasDepthAnswers] = useState(false);
@@ -838,26 +844,81 @@ export default function BriefPage({ id }: BriefPageProps) {
           )}
 
           <div className="bg-card border border-border rounded-2xl shadow-sm px-7 py-8 mt-4">
-            <p className="text-sm text-muted-foreground italic mb-6 leading-relaxed text-center max-w-lg mx-auto">
-              Your name, address, and contact information are not included in this summary. You control what gets shared and when.
-            </p>
-
             {!submitted ? (
-              <div className="text-center">
-                <Button
-                  size="lg"
-                  onClick={() => setSubmitted(true)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 w-full sm:w-auto"
+              <>
+                <h2 className="font-serif text-xl font-bold text-secondary mb-2 text-center">Connect Me with a Professional</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed text-center max-w-lg mx-auto mb-6">
+                  Enter your name and email and we'll forward your brief to a professional in your area. They'll review it before reaching out — so they already understand your situation when you speak.
+                </p>
+                <form
+                  className="max-w-sm mx-auto space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setConnectSending(true);
+                    setConnectError(false);
+                    try {
+                      const res = await fetch("/api/send-brief", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          brief,
+                          contact: { name: connectName, email: connectEmail },
+                        }),
+                      });
+                      if (!res.ok) throw new Error("send failed");
+                      setSubmitted(true);
+                    } catch {
+                      setConnectError(true);
+                    } finally {
+                      setConnectSending(false);
+                    }
+                  }}
                 >
-                  Connect Me with a Professional
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="connect-name" className="text-sm font-medium text-secondary">First name</Label>
+                    <Input
+                      id="connect-name"
+                      type="text"
+                      placeholder="Your first name"
+                      value={connectName}
+                      onChange={(e) => setConnectName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="connect-email" className="text-sm font-medium text-secondary">Email address</Label>
+                    <Input
+                      id="connect-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={connectEmail}
+                      onChange={(e) => setConnectEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {connectError && (
+                    <p className="text-sm text-red-600 text-center">Something went wrong — please try again.</p>
+                  )}
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={connectSending}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 w-full"
+                  >
+                    {connectSending ? "Sending…" : "Send My Brief"}
+                    {!connectSending && <ArrowRight className="w-4 h-4 ml-2" />}
+                  </Button>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Your contact info is only shared when you submit this form. No spam.
+                  </p>
+                </form>
+              </>
             ) : (
-              <div className="bg-accent/10 border border-accent/30 rounded-xl px-6 py-5 text-center max-w-xl mx-auto">
-                <CheckCircle2 className="w-8 h-8 text-accent mx-auto mb-3" />
-                <p className="text-secondary font-medium leading-relaxed">
-                  Thank you — your brief has been submitted. A professional in your area will review it and reach out if they're a good fit. This feature is coming soon — check back shortly.
+              <div className="text-center">
+                <CheckCircle2 className="w-10 h-10 text-accent mx-auto mb-4" />
+                <h3 className="font-serif text-xl font-bold text-secondary mb-2">You're all set, {connectName}.</h3>
+                <p className="text-muted-foreground leading-relaxed max-w-md mx-auto">
+                  Your brief has been sent. A professional will review your situation and reach out to {connectEmail} if they're a good fit.
                 </p>
               </div>
             )}
@@ -869,6 +930,12 @@ export default function BriefPage({ id }: BriefPageProps) {
                 Or browse our expert directory directly →
               </span>
             </Link>
+          </div>
+
+          <div className="border-t border-border pt-6 mt-2">
+            <p className="text-xs text-muted-foreground leading-relaxed text-center max-w-2xl mx-auto">
+              <span className="font-semibold text-secondary">Disclaimer:</span> ClearPath provides educational guidance only. Nothing in this brief constitutes legal, financial, medical, or professional advice. Information about Medicare, Medicaid, estate planning, and probate is general in nature and may not reflect your state's current laws or your specific circumstances. Always consult a qualified attorney, financial advisor, or healthcare professional before making decisions.
+            </p>
           </div>
 
         </div>
